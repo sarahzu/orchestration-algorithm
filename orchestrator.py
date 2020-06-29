@@ -2,11 +2,10 @@ from json.decoder import JSONDecodeError
 from osbrain import run_nameserver, run_agent
 from simulatorA.simulatorA import SimulatorA
 from simulatorB.simulatorB import SimulatorB
-from simulator import Simulator
-import time
 import json
 import random
 from termcolor import colored
+from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
 
 initial_data = random.sample(range(10), 10)
 max_time_step = 9
@@ -21,16 +20,18 @@ ns = run_nameserver()
 envA = run_agent('SimulatorA', attributes=dict(data=initial_data))
 envB = run_agent('SimulatorB', attributes=dict(data=initial_data))
 
+known_algorithms = ['Gauss-Seidel', 'Jacobi']
+
 
 class Orchestrator:
     """
     Orchestrator responsible for linking simulators to agents and running them.
     """
 
-    def __init__(self):
-
+    def __init__(self, algorithm):
         self.time_step = curr_time_step
         self.data = initial_data
+        self.algorithm = algorithm
         print("Initial data: " + str(self.data))
 
     def run_simulation(self):
@@ -60,18 +61,19 @@ class Orchestrator:
             "data": self.data
         }
 
-        while min_time_step <= self.time_step < max_time_step:
-            # execute simulator B with output from simulator A
-            simulatorB_output = self.execute_simulator_with_output_from_other_simulator(
-                agent_simulatorB, simulatorA_output, 'mainA')
-            print("SimulatorB output: " + str(simulatorB_output))
-
-            # execute simulator A with output from simulator B
-            simulatorA_output = self.execute_simulator_with_output_from_other_simulator(
-                agent_simulatorA, simulatorB_output, 'mainB')
-            self.time_step += 1
-            print("SimulatorA output: " + str(simulatorA_output))
-
+        # depending on used algorithm, execute different strategy
+        if self.algorithm.lower() == 'gauss-seidel':
+            # run gauss seidel algorithm
+            gauss_seidel_algorithm = GaussSeidelAlgorithm()
+            gauss_seidel_algorithm.algorithm(min_time_step, self.time_step, max_time_step,
+                                             self.execute_simulator_with_output_from_other_simulator, agent_simulatorA,
+                                             agent_simulatorB, simulatorA_output)
+        elif self.algorithm.lower() == 'jacobi':
+            pass
+        else:
+            print(colored("------------\nalgorithm \"" + str(self.algorithm) +
+                          "\" given to orchestrator is not known.\nplease select one of the following algorithms: "
+                          + str(known_algorithms) + "\n------------", 'yellow'))
         ns.shutdown()
 
     def execute_simulator_with_output_from_other_simulator(self, agent_simulator_receiver, simulator_sender_input,
@@ -122,9 +124,9 @@ def handler_execution(agent, message, simulator):
         return simulator_output_data
     except JSONDecodeError:
         print(colored("------------\nwrong input format coming from " + str(agent) + "\ninput: "
-              + str(message) + "\nexpected input format: json\n------------", 'yellow'))
+                      + str(message) + "\nexpected input format: json\n------------", 'yellow'))
 
 
 if __name__ == '__main__':
-    orchestrator = Orchestrator()
+    orchestrator = Orchestrator('Gauss-Seidel')
     orchestrator.run_simulation()
