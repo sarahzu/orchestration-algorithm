@@ -9,13 +9,13 @@ from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
 from strategy.jacobi_algorithm import JacobiAlgorithm
 
 initial_data = random.sample(range(10), 10)
-max_time_step = 9
-min_time_step = 0
-curr_time_step = 0
+max_state = 9
+min_state = 0
+curr_state = 0
 communication_step = 1
 
-simulatorA = SimulatorA("", curr_time_step, initial_data)
-simulatorB = SimulatorB("", curr_time_step, initial_data)
+simulatorA = SimulatorA(curr_state, initial_data)
+simulatorB = SimulatorB(curr_state, initial_data)
 
 # System deployment
 ns = run_nameserver()
@@ -31,8 +31,8 @@ class Orchestrator:
     """
 
     def __init__(self, algorithm):
-        self.time_step = curr_time_step
-        self.communication_step = communication_step
+        self.state = curr_state
+        self.time_step = communication_step
         self.data = initial_data
         self.algorithm = algorithm
         print("Initial data: " + str(self.data))
@@ -60,7 +60,7 @@ class Orchestrator:
 
         # initial simulatorA output
         simulatorA_output = {
-            "time_step": self.time_step,
+            "state": self.state,
             "data": self.data
         }
 
@@ -68,20 +68,20 @@ class Orchestrator:
         if self.algorithm.lower() == 'gauss-seidel':
             # run gauss seidel algorithm
             gauss_seidel_algorithm = GaussSeidelAlgorithm()
-            final_time_step, final_data = gauss_seidel_algorithm.algorithm(
-                min_time_step, self.time_step, max_time_step, agent_simulatorA, 'mainA',
-                agent_simulatorB, 'mainB', simulatorA_output, self.communication_step)
+            final_state, final_data = gauss_seidel_algorithm.algorithm(
+                min_state, self.state, max_state, agent_simulatorA, 'mainA',
+                agent_simulatorB, 'mainB', simulatorA_output, self.time_step)
 
-            print("final time step: " + str(final_time_step) + "\nfinal data: " + str(final_data['data']))
+            print("final state: " + str(final_state) + "\nfinal data: " + str(final_data['data']))
 
         elif self.algorithm.lower() == 'jacobi':
             # run jacobi algorithm
             jacobi_algorithm = JacobiAlgorithm()
-            final_time_step, final_data = jacobi_algorithm.algorithm(
-                min_time_step, self.time_step, max_time_step, agent_simulatorA, 'mainA',
-                agent_simulatorB, 'mainB', simulatorA_output, self.communication_step)
+            final_state, final_data = jacobi_algorithm.algorithm(
+                min_state, self.state, max_state, agent_simulatorA, 'mainA',
+                agent_simulatorB, 'mainB', simulatorA_output, self.time_step)
 
-            print("final time step: " + str(final_time_step) + "\nfinal data: " + str(final_data['data']))
+            print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data['data']))
         else:
             print(colored("------------\nalgorithm \"" + str(self.algorithm) +
                           "\" given to orchestrator is not known.\nplease select one of the following algorithms: "
@@ -113,7 +113,7 @@ def handler_execution(agent, message, simulator):
     try:
         input_json = json.loads(message)
         # set new computed data
-        simulator_output_data = simulator.run_time_step(input_json["time_step"], input_json["data"])
+        simulator_output_data = simulator.run_time_step(input_json["state"], input_json["data"])
         return simulator_output_data
     except JSONDecodeError:
         print(colored("------------\nwrong input format coming from " + str(agent) + "\ninput: "
