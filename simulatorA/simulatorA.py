@@ -11,10 +11,6 @@ class SimulatorA(Simulator, Agent):
         self.data = data
         self.modelA = ModelA()
 
-        # TODO: While loop
-        # if time_step:
-        #    self.run_time_step(self.time_step, data)
-
     def get_data(self):
         return self.data
 

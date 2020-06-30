@@ -8,7 +8,8 @@ class ModelA:
 
     def run(self, data, time_step):
         try:
-            data[time_step] = data[time_step] + 11
+            current_data_entry = data[time_step]
+            data[time_step] = current_data_entry + 11
             return data
         except TypeError:
             print(colored("------------\nwrong data type given to Model A\ninput type data: "

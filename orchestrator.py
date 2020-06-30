@@ -6,11 +6,13 @@ import json
 import random
 from termcolor import colored
 from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
+from strategy.jacobi_algorithm import JacobiAlgorithm
 
 initial_data = random.sample(range(10), 10)
 max_time_step = 9
 min_time_step = 0
 curr_time_step = 0
+communication_step = 1
 
 simulatorA = SimulatorA("", curr_time_step, initial_data)
 simulatorB = SimulatorB("", curr_time_step, initial_data)
@@ -30,6 +32,7 @@ class Orchestrator:
 
     def __init__(self, algorithm):
         self.time_step = curr_time_step
+        self.communication_step = communication_step
         self.data = initial_data
         self.algorithm = algorithm
         print("Initial data: " + str(self.data))
@@ -42,11 +45,11 @@ class Orchestrator:
         """
         # Create a proxy to SimulatorA and log a message
         agent_simulatorA = ns.proxy('SimulatorA')
-        agent_simulatorA.log_info('Hello world! Simulator A')
+        agent_simulatorA.log_info('Simulator A connected')
 
         # Create a proxy to SimulatorB and log a message
         agent_simulatorB = ns.proxy('SimulatorB')
-        agent_simulatorB.log_info('Hello world! Simulator B')
+        agent_simulatorB.log_info('Simulator B connected')
 
         # System configuration:
         # connect agent of simulator A with agent of simulator B and vis versa
@@ -65,35 +68,25 @@ class Orchestrator:
         if self.algorithm.lower() == 'gauss-seidel':
             # run gauss seidel algorithm
             gauss_seidel_algorithm = GaussSeidelAlgorithm()
-            gauss_seidel_algorithm.algorithm(min_time_step, self.time_step, max_time_step,
-                                             self.execute_simulator_with_output_from_other_simulator, agent_simulatorA,
-                                             agent_simulatorB, simulatorA_output)
+            final_time_step, final_data = gauss_seidel_algorithm.algorithm(
+                min_time_step, self.time_step, max_time_step, agent_simulatorA, 'mainA',
+                agent_simulatorB, 'mainB', simulatorA_output, self.communication_step)
+
+            print("final time step: " + str(final_time_step) + "\nfinal data: " + str(final_data['data']))
+
         elif self.algorithm.lower() == 'jacobi':
-            pass
+            # run jacobi algorithm
+            jacobi_algorithm = JacobiAlgorithm()
+            final_time_step, final_data = jacobi_algorithm.algorithm(
+                min_time_step, self.time_step, max_time_step, agent_simulatorA, 'mainA',
+                agent_simulatorB, 'mainB', simulatorA_output, self.communication_step)
+
+            print("final time step: " + str(final_time_step) + "\nfinal data: " + str(final_data['data']))
         else:
             print(colored("------------\nalgorithm \"" + str(self.algorithm) +
                           "\" given to orchestrator is not known.\nplease select one of the following algorithms: "
                           + str(known_algorithms) + "\n------------", 'yellow'))
         ns.shutdown()
-
-    def execute_simulator_with_output_from_other_simulator(self, agent_simulator_receiver, simulator_sender_input,
-                                                           agent_sender_name):
-        """
-        Execute a receiver agent with input from a sender simulators agent
-
-        :param agent_simulator_receiver:    simulator to be executed and which receives input
-        :param simulator_sender_input:      input for receiving agent coming from the sending agent
-        :param agent_sender_name:           name of sending agent
-        :return:                            json containing the output data computed with executed simulator
-        """
-        agent_simulator_receiver.send(agent_sender_name, json.dumps(simulator_sender_input))
-        simulator_receiver_output_data = agent_simulator_receiver.recv(agent_sender_name)
-
-        simulator_receiver_output = {
-            "time_step": self.time_step,
-            "data": simulator_receiver_output_data
-        }
-        return simulator_receiver_output
 
 
 def handler_simulatorA(agent, message):
