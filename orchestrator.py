@@ -1,4 +1,9 @@
+import glob
+import re
 from json.decoder import JSONDecodeError
+from os import listdir
+from os.path import isfile, join
+
 from osbrain import run_nameserver, run_agent
 from simulatorA.simulatorA import SimulatorA
 from simulatorB.simulatorB import SimulatorB
@@ -19,8 +24,6 @@ simulatorB = SimulatorB(curr_state, initial_data)
 
 # System deployment
 ns = run_nameserver()
-envA = run_agent('SimulatorA', attributes=dict(data=initial_data))
-envB = run_agent('SimulatorB', attributes=dict(data=initial_data))
 
 known_algorithms = ['Gauss-Seidel', 'Jacobi']
 
@@ -37,19 +40,55 @@ class Orchestrator:
         self.algorithm = algorithm
         print("Initial data: " + str(self.data))
 
+    def extract_simulators(self):
+        """
+        extract all simulator files in the root folder
+
+        :return:    list with all simulator filenames
+        """
+        simulator_list = []
+        listing = glob.glob('simulator*')
+        for filename in listing:
+            try:
+                files = [f for f in listdir(filename) if isfile(join(filename, f))]
+                try:
+                    files.remove('__init__.py')
+                except ValueError:
+                    pass
+                regex = re.compile(r'model.\.py')
+                filtered_files = [i for i in files if not regex.match(i)]
+                simulator_list.extend(filtered_files)
+            except NotADirectoryError:
+                pass
+        return simulator_list
+
+    def connect_simulator_to_agent_proxy(self, simulator_names, simulator_index):
+        """
+        create agent proxy and connect it to the right simulator name
+
+        :param simulator_names:     list of names of the simulators, e.g. ["simulatorA.py", ...]
+        :param simulator_index:     index of the simulator in the simulator_names list which has to be connected
+        :return:                    agent object of the corresponding simulator
+        """
+        simulator_name = simulator_names[simulator_index].strip('.py')
+        run_agent(simulator_name)
+        agent_simulator = ns.proxy(simulator_name)
+        agent_simulator.log_info(simulator_name + ' connected')
+        return agent_simulator
+
     def run_simulation(self):
         """
         connect all simulators to an agent and let them run
 
         :return:
         """
-        # Create a proxy to SimulatorA and log a message
-        agent_simulatorA = ns.proxy('SimulatorA')
-        agent_simulatorA.log_info('Simulator A connected')
 
-        # Create a proxy to SimulatorB and log a message
-        agent_simulatorB = ns.proxy('SimulatorB')
-        agent_simulatorB.log_info('Simulator B connected')
+        # select all simulators
+        simulator_names = sorted(self.extract_simulators())
+
+        # choose the simulators to use, in this case simulator A (index 0) and B (index 1)
+        agent_simulatorA = self.connect_simulator_to_agent_proxy(simulator_names, 0)
+        agent_simulatorB = self.connect_simulator_to_agent_proxy(simulator_names, 1)
 
         # System configuration:
         # connect agent of simulator A with agent of simulator B and vis versa
