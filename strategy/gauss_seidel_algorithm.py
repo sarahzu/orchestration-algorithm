@@ -6,22 +6,19 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
     def __init__(self):
         super().__init__()
 
-    def algorithm(self, min_time_step, state, max_time_step, agent_simulatorA, name_agent_simulatorA,
-                  agent_simulatorB, name_agent_simulatorB, initial_input, time_step):
+    def algorithm(self, min_state, state, max_state, agent_simulator_object_list, agent_simulator_name_list,
+                  initial_input, time_step):
 
-        simulatorA_output = initial_input
-        while min_time_step <= state < max_time_step:
-            # execute simulator B with output from simulator A
-            simulatorB_output = self.execute_simulator_with_output_from_other_simulator(
-                agent_simulatorB, simulatorA_output, name_agent_simulatorA, state)
-            print("SimulatorB output: " + str(simulatorB_output))
-
-            # execute simulator A with output from simulator B
-            simulatorA_output = self.execute_simulator_with_output_from_other_simulator(
-                agent_simulatorA, simulatorB_output, name_agent_simulatorB, state)
-            print("SimulatorA output: " + str(simulatorA_output))
+        next_simulator_input = initial_input
+        while min_state <= state < max_state:
+            for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):
+                # execute simulator B with output from simulator A
+                simulator_output = self.execute_simulator_with_output_from_other_simulator(
+                    agent_simulator, next_simulator_input, agent_simulator_name, state)
+                print(str(agent_simulator_name) + " output: " + str(simulator_output))
+                next_simulator_input = simulator_output
 
             # increase state by the given time step
             state += time_step
 
-        return state, simulatorA_output
+        return state, next_simulator_input

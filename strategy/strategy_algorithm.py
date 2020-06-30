@@ -6,8 +6,8 @@ class StrategyAlgorithm:
     def __init__(self):
         pass
 
-    def algorithm(self, min_time_step, state, max_time_step, agent_simulatorA, name_agent_simulatorA,
-                  agent_simulatorB, name_agent_simulatorB, initial_input, time_step):
+    def algorithm(self, min_state, state, max_state, agent_simulator_object_list, agent_simulator_name_list,
+                  initial_input, time_step):
         pass
 
     def execute_simulator_with_output_from_other_simulator(self, agent_simulator_receiver, simulator_sender_input,

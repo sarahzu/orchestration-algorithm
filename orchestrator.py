@@ -104,21 +104,24 @@ class Orchestrator:
         }
 
         # depending on used algorithm, execute different strategy
+        simulator_object_list = [agent_simulatorB, agent_simulatorA]
+        simulator_name_list = ['mainA', 'mainB']
         if self.algorithm.lower() == 'gauss-seidel':
             # run gauss seidel algorithm
             gauss_seidel_algorithm = GaussSeidelAlgorithm()
             final_state, final_data = gauss_seidel_algorithm.algorithm(
-                min_state, self.state, max_state, agent_simulatorA, 'mainA',
-                agent_simulatorB, 'mainB', simulatorA_output, self.time_step)
+                min_state, self.state, max_state, simulator_object_list, simulator_name_list,
+                simulatorA_output, self.time_step)
 
             print("final state: " + str(final_state) + "\nfinal data: " + str(final_data['data']))
 
         elif self.algorithm.lower() == 'jacobi':
+            pass
             # run jacobi algorithm
             jacobi_algorithm = JacobiAlgorithm()
             final_state, final_data = jacobi_algorithm.algorithm(
-                min_state, self.state, max_state, agent_simulatorA, 'mainA',
-                agent_simulatorB, 'mainB', simulatorA_output, self.time_step)
+                min_state, self.state, max_state, simulator_object_list, simulator_name_list,
+                simulatorA_output, self.time_step)
 
             print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data['data']))
         else:
@@ -160,5 +163,5 @@ def handler_execution(agent, message, simulator):
 
 
 if __name__ == '__main__':
-    orchestrator = Orchestrator('Gauss-Seidel')
+    orchestrator = Orchestrator('gauss-seidel')
     orchestrator.run_simulation()

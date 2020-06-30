@@ -6,6 +6,7 @@ class JacobiAlgorithm(StrategyAlgorithm):
     def __init__(self):
         super().__init__()
 
-    def algorithm(self, min_time_step, state, max_time_step, agent_simulatorA, name_agent_simulatorA,
-                  agent_simulatorB, name_agent_simulatorB, initial_input, time_step):
-        pass
+    def algorithm(self, min_state, state, max_state, agent_simulator_object_list, agent_simulator_name_list,
+                  initial_input, time_step):
+        #  TODO: implement jacobi algorithm
+        return state, initial_input
