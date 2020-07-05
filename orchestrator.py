@@ -163,5 +163,7 @@ def handler_execution(agent, message, simulator):
 
 
 if __name__ == '__main__':
-    orchestrator = Orchestrator('gauss-seidel')
+    jacobi = 'jacobi'
+    gauss = 'gauss-seidel'
+    orchestrator = Orchestrator(jacobi)
     orchestrator.run_simulation()
