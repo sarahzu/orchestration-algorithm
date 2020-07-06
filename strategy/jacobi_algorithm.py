@@ -1,3 +1,5 @@
+import random
+
 from termcolor import colored
 
 from strategy.strategy_algorithm import StrategyAlgorithm
@@ -30,4 +32,29 @@ class JacobiAlgorithm(StrategyAlgorithm):
             # increase state by the given time step
             state += time_step
             i = 0
+        print("outputs: " + str(outputs))
         return state, outputs[i]
+
+    # def jacobi(self, a, x, b, current_step):
+    #     n = len(x)
+    #     x_out = [0] * len(x)
+    #     k = 0
+    #     k_max = 5
+    #     while k < k_max:
+    #         for i in range(n):
+    #             delta = 0
+    #             for j in range(n):
+    #                 if not i == j:
+    #                     delta = delta + a[i][j] * x[j]
+    #                     # x[i] = x[i] - a[i][j] * x_old[j]
+    #             try:
+    #                 # x[i] = x[i] / a[i][i]
+    #                 x_out[i] = (1/a[i][i]) * (b[i] - delta)
+    #             except ZeroDivisionError:
+    #                 a[i][i] += 1
+    #                 # x[i] = x[i] / a[i][i]
+    #                 x_out[i] = (1/a[i][i]) * (b[i] - delta)
+    #         k += 1
+    #     return x_out
+
+

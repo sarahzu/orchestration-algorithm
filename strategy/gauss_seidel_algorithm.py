@@ -37,3 +37,44 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
             state += time_step
 
         return state, next_simulator_input
+
+    # simulator_order = {1: simulatorA, 2: simulatorB, ...}
+    # agent_simulator_object_list = [agent_simulatorB, agent_simulatorA]
+    # def algo_2(self, max_state, time_step, agent_simulator_object_list, agent_simulator_name_list,
+    #            simulator_order, curr_simulator_input):
+    #     state = 0
+    #     uc = [0] * len(agent_simulator_object_list)
+    #     y = [0] * len(agent_simulator_object_list)
+    #     up = [0] * len(agent_simulator_object_list)
+    #
+    #     #  initial variables
+    #     for w_i, w in enumerate(agent_simulator_object_list):
+    #         uc[w_i] = 0
+    #         y[w_i] = 0
+    #         up[w_i] = 0
+    #     # compute initial outputs
+    #     for j in range(len(agent_simulator_object_list)):
+    #         # simulator input
+    #         uc[j] = curr_simulator_input
+    #         y[j] = uc[j]
+    #         curr_simulator_input = y[j]
+    #         up[j] = uc[j]
+    #
+    #     while state < max_state:
+    #         for j in range(len(agent_simulator_object_list)):
+    #             w = simulator_order[j]
+    #             # simulator input
+    #             uc[j] = curr_simulator_input
+    #             print("uc: " + str(uc[j]))
+    #
+    #             # do step
+    #             y[j] = self.execute_simulator_with_output_from_other_simulator(
+    #                 w, uc[j], agent_simulator_name_list[j], state)
+    #
+    #             curr_simulator_input = y[j]
+    #         for w in range(agent_simulator_object_list):
+    #             up[w] = uc[w]
+    #         state += time_step
+    #     return y
+
+

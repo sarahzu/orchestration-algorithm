@@ -10,6 +10,10 @@ from simulatorB.simulatorB import SimulatorB
 import json
 import random
 from termcolor import colored
+
+from simulatorC.simulatorC import SimulatorC
+from simulatorD.simulatorD import SimulatorD
+from simulatorE.simulatorE import SimulatorE
 from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
 from strategy.jacobi_algorithm import JacobiAlgorithm
 
@@ -21,6 +25,9 @@ communication_step = 1
 
 simulatorA = SimulatorA(curr_state, initial_data)
 simulatorB = SimulatorB(curr_state, initial_data)
+simulatorC = SimulatorC(curr_state, initial_data)
+simulatorD = SimulatorD(curr_state, initial_data)
+simulatorE = SimulatorE(curr_state, initial_data)
 
 # System deployment
 ns = run_nameserver()
@@ -89,13 +96,17 @@ class Orchestrator:
         # choose the simulators to use, in this case simulator A (index 0) and B (index 1)
         agent_simulatorA = self.connect_simulator_to_agent_proxy(simulator_names, 0)
         agent_simulatorB = self.connect_simulator_to_agent_proxy(simulator_names, 1)
+        agent_simulatorC = self.connect_simulator_to_agent_proxy(simulator_names, 2)
 
         # System configuration:
-        # connect agent of simulator A with agent of simulator B and vis versa
+        # define connection adresses
         addr_simulatorA = agent_simulatorA.bind('REP', alias='mainA', handler=handler_simulatorB)
-        agent_simulatorB.connect(addr_simulatorA, alias='mainA')
         addr_simulatorB = agent_simulatorB.bind('REP', alias='mainB', handler=handler_simulatorA)
-        agent_simulatorA.connect(addr_simulatorB, alias='mainB')
+        addr_simulatorC = agent_simulatorC.bind('REP', alias='mainC', handler=handler_simulatorC)
+        # connect agents to receiving address
+        agent_simulatorB.connect(addr_simulatorA, alias='mainA')
+        agent_simulatorA.connect(addr_simulatorC, alias='mainC')
+        agent_simulatorC.connect(addr_simulatorB, alias='mainB')
 
         # initial simulatorA output
         simulatorA_output = {
@@ -104,8 +115,9 @@ class Orchestrator:
         }
 
         # depending on used algorithm, execute different strategy
-        simulator_object_list = [agent_simulatorB, agent_simulatorA]
-        simulator_name_list = ['mainA', 'mainB']
+        simulator_object_list = [agent_simulatorB, agent_simulatorA, agent_simulatorC]
+        simulator_name_list = ['mainA', 'mainC', 'mainB']
+        # simulator_order = {0: agent_simulatorB, 1: agent_simulatorA}
         if self.algorithm.lower() == 'gauss-seidel':
             # run gauss seidel algorithm
             gauss_seidel_algorithm = GaussSeidelAlgorithm()
@@ -141,6 +153,11 @@ def handler_simulatorB(agent, message):
     return simulator_output_data
 
 
+def handler_simulatorC(agent, message):
+    simulator_output_data = handler_execution(agent, message, simulatorC)
+    return simulator_output_data
+
+
 def handler_execution(agent, message, simulator):
     """
     Agent handler function called whenever an agent uses the send() command. It runs the given simulator with the data
@@ -165,5 +182,5 @@ def handler_execution(agent, message, simulator):
 if __name__ == '__main__':
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(jacobi)
+    orchestrator = Orchestrator(gauss)
     orchestrator.run_simulation()

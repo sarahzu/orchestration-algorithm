@@ -4,7 +4,7 @@ from simulatorE.modelE import ModelE
 from simulator import Simulator
 
 
-class SimulatorA(Simulator, Agent):
+class SimulatorE(Simulator, Agent):
 
     def __init__(self, state, data):
         super().__init__(state)
