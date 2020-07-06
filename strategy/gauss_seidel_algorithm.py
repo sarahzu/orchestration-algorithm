@@ -11,7 +11,8 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
     def algorithm(self, min_state, state, max_state, agent_simulator_object_list, agent_simulator_name_list,
                   initial_input, time_step):
 
-        next_simulator_input = initial_input
+        curr_simulator_input = initial_input
+        prev_simulator_input = initial_input
         try:
             states = [state] * len(agent_simulator_object_list)
         except TypeError:
@@ -25,9 +26,11 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                 current_simulators_state = states[i]
                 # execute simulator B with output from simulator A
                 simulator_output = self.execute_simulator_with_output_from_other_simulator(
-                    agent_simulator, next_simulator_input, agent_simulator_name, current_simulators_state)
-                print(str(agent_simulator_name) + " output: " + str(simulator_output))
-                next_simulator_input = simulator_output
+                    agent_simulator, curr_simulator_input, agent_simulator_name, current_simulators_state)
+                prev_simulator_input = curr_simulator_input
+                print(str(agent_simulator_name) + " output: " + str(simulator_output) + " prev output: " + str(prev_simulator_input))
+
+                curr_simulator_input = simulator_output
 
                 # increase simulators state and states index
                 states[i] += time_step
@@ -36,7 +39,7 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
             # increase state by the given time step
             state += time_step
 
-        return state, next_simulator_input
+        return state, curr_simulator_input
 
     # simulator_order = {1: simulatorA, 2: simulatorB, ...}
     # agent_simulator_object_list = [agent_simulatorB, agent_simulatorA]
