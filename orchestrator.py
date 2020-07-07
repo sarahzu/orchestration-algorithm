@@ -35,15 +35,14 @@ communication_step = 1
 known_algorithms = ['Gauss-Seidel', 'Jacobi']
 
 
-def connect_simulator_to_agent_proxy(simulator_names, simulator_index):
+def connect_simulator_to_agent_proxy(simulator_name):
     """
     create agent proxy and connect it to the right simulator name
 
-    :param simulator_names:     list of names of the simulators, e.g. ["simulatorA.py", ...]
-    :param simulator_index:     index of the simulator in the simulator_names list which has to be connected
+    :param simulator_name:      name of simulator
     :return:                    agent object of the corresponding simulator
     """
-    simulator_name = simulator_names[simulator_index].strip('.py')
+    # simulator_name = simulator_name.strip('.py')
     run_agent(simulator_name)
     agent_simulator = ns.proxy(simulator_name)
     agent_simulator.log_info(simulator_name + ' connected')
@@ -55,13 +54,13 @@ class Orchestrator:
     Orchestrator responsible for linking simulators to agents and running them.
     """
 
-    def __init__(self, algorithm, agent_simulator_name_list):
+    def __init__(self, algorithm, simulator_list):
         self.state = curr_state
         self.time_step = communication_step
         self.data = initial_data
         self.algorithm = algorithm
-        self.agent_simulator_name_list = agent_simulator_name_list
         print("Initial data: " + str(self.data))
+        self.simulator_list = simulator_list
 
     def run_simulation(self):
         """
@@ -71,35 +70,56 @@ class Orchestrator:
         """
 
         # choose the simulators to use, in this case simulator A (index 0) and B (index 1)
-        agent_simulatorA = connect_simulator_to_agent_proxy(self.agent_simulator_name_list, 0)
-        agent_simulatorB = connect_simulator_to_agent_proxy(self.agent_simulator_name_list, 1)
-        agent_simulatorC = connect_simulator_to_agent_proxy(self.agent_simulator_name_list, 2)
+        agent_simulatorA = connect_simulator_to_agent_proxy(self.simulator_list[0]["name"])
+        agent_simulatorB = connect_simulator_to_agent_proxy(self.simulator_list[1]["name"])
+        agent_simulatorC = connect_simulator_to_agent_proxy(self.simulator_list[2]["name"])
+
+        self.simulator_list[0]['agent'] = agent_simulatorA
+        self.simulator_list[1]['agent'] = agent_simulatorB
+        self.simulator_list[2]['agent'] = agent_simulatorC
 
         # System configuration:
-        # define connection adresses
-        addr_simulatorA = agent_simulatorA.bind('REP', alias='mainA', handler=simulatorB_factory.handler_simulator)
-        addr_simulatorB = agent_simulatorB.bind('REP', alias='mainB', handler=simulatorA_factory.handler_simulator)
-        addr_simulatorC = agent_simulatorC.bind('REP', alias='mainC', handler=simulatorC_factory.handler_simulator)
+        # define connection addresses
+        # simulator_name_list = ['mainA', 'mainC', 'mainB']
+        # simulator_object_list = [agent_simulatorB, agent_simulatorA, agent_simulatorC]
+        simulator_object_list = []
+        simulator_alias_name_list = []
+        for simulator_dict in self.simulator_list:
+            connection_alias = simulator_dict["name"]
+            addr_simulator = simulator_dict["agent"].bind('REP', alias=connection_alias,
+                                                          handler=simulator_dict["factory"].handler_simulator)
+            for simulator_dict2 in self.simulator_list:
+                if simulator_dict2["name"] == simulator_dict2["next simulator"]:
+                    simulator_dict2["agent"].connect(addr_simulator, alias=connection_alias)
+                    simulator_alias_name_list.append(connection_alias)
+                    simulator_object_list.append(simulator_dict2["agent"])
+
+        # addr_simulatorA = agent_simulatorA.bind('REP', alias='mainA', handler=simulatorB_factory.handler_simulator)
+        # addr_simulatorB = agent_simulatorB.bind('REP', alias='mainB', handler=simulatorA_factory.handler_simulator)
+        # addr_simulatorC = agent_simulatorC.bind('REP', alias='mainC', handler=simulatorC_factory.handler_simulator)
         # connect agents to receiving address
-        agent_simulatorB.connect(addr_simulatorA, alias='mainA')
-        agent_simulatorA.connect(addr_simulatorC, alias='mainC')
-        agent_simulatorC.connect(addr_simulatorB, alias='mainB')
+
+        # # B runs with input from A (address)
+        # agent_simulatorB.connect(addr_simulatorA, alias='mainA')
+        # # A runs with input from C (address)
+        # agent_simulatorA.connect(addr_simulatorC, alias='mainC')
+        # # C runs with input from B (address)
+        # agent_simulatorC.connect(addr_simulatorB, alias='mainB')
 
         # initial simulatorA output
         simulatorA_output = {
             "state": self.state,
-            "data": self.data
+            "data": [self.data, self.data]
         }
 
         # depending on used algorithm, execute different strategy
-        simulator_object_list = [agent_simulatorB, agent_simulatorA, agent_simulatorC]
-        simulator_name_list = ['mainA', 'mainC', 'mainB']
         # simulator_order = {0: agent_simulatorB, 1: agent_simulatorA}
         if self.algorithm.lower() == 'gauss-seidel':
             # run gauss seidel algorithm
             gauss_seidel_algorithm = GaussSeidelAlgorithm()
+            print(str(simulatorA_output))
             final_state, final_data = gauss_seidel_algorithm.algorithm(
-                min_state, self.state, max_state, simulator_object_list, simulator_name_list,
+                min_state, self.state, max_state, simulator_object_list, simulator_alias_name_list,
                 simulatorA_output, self.time_step)
 
             print("final state: " + str(final_state) + "\nfinal data: " + str(final_data['data']))
@@ -110,7 +130,7 @@ class Orchestrator:
             jacobi_algorithm = JacobiAlgorithm()
             simulator_inputs = [simulatorA_output] * 3
             final_state, final_data = jacobi_algorithm.algorithm(
-                min_state, self.state, max_state, simulator_object_list, simulator_name_list,
+                min_state, self.state, max_state, simulator_object_list, simulator_alias_name_list,
                 simulator_inputs, self.time_step)
 
             print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data))
@@ -208,8 +228,21 @@ if __name__ == '__main__':
     ns = run_nameserver()
 
     # select all simulators
-    simulator_names = sorted(extract_simulators())
+    # simulator_names = sorted(extract_simulators())
+    simulator_names = ["simulatorA", "simulatorB", "simulatorC"]
+    # dependencies
+    dependencies = {"simulatorA": ["simulatorB", "simulatorC"],
+                    "simulatorB": ["simulatorC", "simulatorA"],
+                    "simulatorC": ["simulatorB"]}
+
+    simulator_list = [{"name": "simulatorA", "factory": simulatorB_factory, "next simulator": "simulatorB",
+                       "dependency": ["simulatorB", "simulatorC"]},
+                      {"name": "simulatorB", "factory": simulatorA_factory, "next simulator": "simulatorA",
+                       "dependency": ["simulatorC", "simulatorA"]},
+                      {"name": "simulatorC", "factory": simulatorC_factory, "next simulator": "simulatorC",
+                       "dependency": ["simulatorB"]}]
+
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(jacobi, simulator_names)
+    orchestrator = Orchestrator(gauss, simulator_list)
     orchestrator.run_simulation()
