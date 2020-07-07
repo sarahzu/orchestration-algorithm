@@ -172,7 +172,7 @@ def handler_execution(agent, message, simulator):
     try:
         input_json = json.loads(message)
         # set new computed data
-        simulator_output_data = simulator.run_time_step(input_json["state"], input_json["data"])
+        simulator_output_data = simulator.run_state(input_json["state"], input_json["data"])
         return simulator_output_data
     except JSONDecodeError:
         print(colored("------------\nwrong input format coming from " + str(agent) + "\ninput: "

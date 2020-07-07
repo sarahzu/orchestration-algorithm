@@ -14,7 +14,7 @@ class SimulatorA(Simulator, Agent):
     def get_data(self):
         return self.data
 
-    def run_time_step(self, state, data):
+    def run_state(self, state, data):
         output = self.modelA.run(data, state)
         self.data = output
         return output
