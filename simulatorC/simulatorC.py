@@ -6,9 +6,8 @@ from simulator import Simulator
 
 class SimulatorC(Simulator, Agent):
 
-    def __init__(self, state, data):
-        super().__init__(state)
-        self.data = data
+    def __init__(self):
+        super().__init__()
         self.modelC = ModelC()
 
     def get_data(self):
