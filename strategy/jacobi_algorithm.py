@@ -11,18 +11,22 @@ class JacobiAlgorithm(StrategyAlgorithm):
         super().__init__()
 
     def algorithm(self, min_state, state, max_state, agent_simulator_object_list, agent_simulator_name_list,
-                  initial_input, time_step):
-        next_simulator_input = initial_input
+                  initial_input_list, time_step):
+        next_simulator_input_list = initial_input_list
         while min_state <= state < max_state:
-            for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):
+            i = 0
+            for agent_simulator, agent_simulator_name, agent_simulator_input in zip(agent_simulator_object_list,
+                                                                                    agent_simulator_name_list,
+                                                                                    next_simulator_input_list):
                 # execute simulator B with output from simulator A
                 simulator_output = self.execute_simulator_with_output_from_other_simulator(
-                    agent_simulator, next_simulator_input, agent_simulator_name, state)
+                    agent_simulator, agent_simulator_input, agent_simulator_name, state)
                 print(str(agent_simulator_name) + " output: " + str(simulator_output))
-                next_simulator_input = simulator_output
+                next_simulator_input_list[i] = simulator_output
+                i += 1
             # increase state by the given time step
             state += time_step
-        return state, next_simulator_input
+        return state, next_simulator_input_list
 
     # def jacobi(self, a, x, b, current_step):
     #     n = len(x)

@@ -108,11 +108,12 @@ class Orchestrator:
             pass
             # run jacobi algorithm
             jacobi_algorithm = JacobiAlgorithm()
+            simulator_inputs = [simulatorA_output] * 3
             final_state, final_data = jacobi_algorithm.algorithm(
                 min_state, self.state, max_state, simulator_object_list, simulator_name_list,
-                simulatorA_output, self.time_step)
+                simulator_inputs, self.time_step)
 
-            print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data['data']))
+            print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data))
         else:
             print(colored("------------\nalgorithm \"" + str(self.algorithm) +
                           "\" given to orchestrator is not known.\nplease select one of the following algorithms: "
@@ -210,5 +211,5 @@ if __name__ == '__main__':
     simulator_names = sorted(extract_simulators())
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(gauss, simulator_names)
+    orchestrator = Orchestrator(jacobi, simulator_names)
     orchestrator.run_simulation()
