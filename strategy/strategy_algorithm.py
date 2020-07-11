@@ -7,13 +7,13 @@ class StrategyAlgorithm:
         pass
 
     def algorithm(self, min_state, state, max_state, agent_simulator_object_list, agent_simulator_name_list,
-                  initial_input, time_step):
+                  initial_input, time_step, dependencies):
         pass
 
     def execute_simulator_with_output_from_other_simulator(self, agent_simulator_receiver, simulator_sender_input,
                                                            agent_sender_name, state):
         """
-        Execute a receiver agent with input from a sender simulators agent
+        Execute a receiver agent with input from a sender simulator's agent
 
         :param agent_simulator_receiver:    simulator to be executed and which receives input
         :param simulator_sender_input:      input for receiving agent coming from the sending agent

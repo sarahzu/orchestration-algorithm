@@ -1,3 +1,4 @@
+import collections
 import glob
 import re
 from json.decoder import JSONDecodeError
@@ -54,13 +55,14 @@ class Orchestrator:
     Orchestrator responsible for linking simulators to agents and running them.
     """
 
-    def __init__(self, algorithm, simulator_list):
+    def __init__(self, algorithm, simulator_list, dependencies):
         self.state = curr_state
         self.time_step = communication_step
         self.data = initial_data
         self.algorithm = algorithm
         print("Initial data: " + str(self.data))
         self.simulator_list = simulator_list
+        self.dependencies = dependencies
 
     def run_simulation(self):
         """
@@ -69,14 +71,21 @@ class Orchestrator:
         :return:
         """
 
-        # choose the simulators to use, in this case simulator A (index 0) and B (index 1)
-        agent_simulatorA = connect_simulator_to_agent_proxy(self.simulator_list[0]["name"])
-        agent_simulatorB = connect_simulator_to_agent_proxy(self.simulator_list[1]["name"])
-        agent_simulatorC = connect_simulator_to_agent_proxy(self.simulator_list[2]["name"])
+        # initial simulatorA output
+        initial_simulator_input = {
+            "state": self.state,
+            "data": self.data
+        }
 
-        self.simulator_list[0]['agent'] = agent_simulatorA
-        self.simulator_list[1]['agent'] = agent_simulatorB
-        self.simulator_list[2]['agent'] = agent_simulatorC
+        # connect all simulators to agents and store agent in simulator_list
+        simulator_order = [0] * len(simulator_list)
+        alias_order = [0] * len(simulator_list)
+        simulator_outputs = {}
+        for simulator_dict in self.simulator_list:
+            agent_simulator = connect_simulator_to_agent_proxy(simulator_dict["name"])
+            # store newly defined agent in corresponding simulator_list entry
+            simulator_dict['agent'] = agent_simulator
+            simulator_outputs[simulator_dict["name"]] = initial_simulator_input
 
         # System configuration:
         # define connection addresses
@@ -86,13 +95,21 @@ class Orchestrator:
         simulator_alias_name_list = []
         for simulator_dict in self.simulator_list:
             connection_alias = simulator_dict["name"]
+            # define agent connection address
             addr_simulator = simulator_dict["agent"].bind('REP', alias=connection_alias,
                                                           handler=simulator_dict["factory"].handler_simulator)
-            for simulator_dict2 in self.simulator_list:
-                if simulator_dict2["name"] == simulator_dict2["next simulator"]:
-                    simulator_dict2["agent"].connect(addr_simulator, alias=connection_alias)
-                    simulator_alias_name_list.append(connection_alias)
-                    simulator_object_list.append(simulator_dict2["agent"])
+            # creat simulator order dict
+            alias_order[simulator_dict["order"]] = connection_alias
+
+            # connect next simulator to address of current simulator
+            for simulator_dict_next in self.simulator_list:
+                # check if next simulator is in current simulators next list
+                if simulator_dict_next["name"] == simulator_dict["next simulator"]:
+                    simulator_dict_next["agent"].connect(addr_simulator, alias=connection_alias)
+                    # simulator_alias_name_list.append(connection_alias)
+                    # simulator_object_list.append(simulator_dict_next["agent"])
+
+                    simulator_order[simulator_dict["order"]] = simulator_dict_next["agent"]
 
         # addr_simulatorA = agent_simulatorA.bind('REP', alias='mainA', handler=simulatorB_factory.handler_simulator)
         # addr_simulatorB = agent_simulatorB.bind('REP', alias='mainB', handler=simulatorA_factory.handler_simulator)
@@ -106,34 +123,36 @@ class Orchestrator:
         # # C runs with input from B (address)
         # agent_simulatorC.connect(addr_simulatorB, alias='mainB')
 
-        # initial simulatorA output
-        simulatorA_output = {
-            "state": self.state,
-            "data": [self.data, self.data]
-        }
+        # simulator_inputs = {}
+        # for key, value in dependencies.items():
+        #     simulator_inputs[key] = []
+        #     for dependency in value:
+        #         simulator_inputs[key].append(self.data)
+
 
         # depending on used algorithm, execute different strategy
         # simulator_order = {0: agent_simulatorB, 1: agent_simulatorA}
         if self.algorithm.lower() == 'gauss-seidel':
             # run gauss seidel algorithm
             gauss_seidel_algorithm = GaussSeidelAlgorithm()
-            print(str(simulatorA_output))
+            print(str(initial_simulator_input))
             final_state, final_data = gauss_seidel_algorithm.algorithm(
-                min_state, self.state, max_state, simulator_object_list, simulator_alias_name_list,
-                simulatorA_output, self.time_step)
+                min_state, self.state, max_state, simulator_order, alias_order,
+                # initial_simulator_input, self.time_step, self.dependencies)
+                simulator_outputs, self.time_step, self.dependencies)
 
-            print("final state: " + str(final_state) + "\nfinal data: " + str(final_data['data']))
+            print("final state: " + str(final_state) + "\nfinal data: " + str(final_data))
 
         elif self.algorithm.lower() == 'jacobi':
             pass
             # run jacobi algorithm
-            jacobi_algorithm = JacobiAlgorithm()
-            simulator_inputs = [simulatorA_output] * 3
-            final_state, final_data = jacobi_algorithm.algorithm(
-                min_state, self.state, max_state, simulator_object_list, simulator_alias_name_list,
-                simulator_inputs, self.time_step)
+            # jacobi_algorithm = JacobiAlgorithm()
+            # simulator_inputs = [initial_simulator_input] * 3
+            # final_state, final_data = jacobi_algorithm.algorithm(
+            #     min_state, self.state, max_state, simulator_object_list, simulator_alias_name_list,
+            #     simulator_inputs, self.time_step)
 
-            print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data))
+            # print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data))
         else:
             print(colored("------------\nalgorithm \"" + str(self.algorithm) +
                           "\" given to orchestrator is not known.\nplease select one of the following algorithms: "
@@ -235,14 +254,14 @@ if __name__ == '__main__':
                     "simulatorB": ["simulatorC", "simulatorA"],
                     "simulatorC": ["simulatorB"]}
 
-    simulator_list = [{"name": "simulatorA", "factory": simulatorB_factory, "next simulator": "simulatorB",
-                       "dependency": ["simulatorB", "simulatorC"]},
-                      {"name": "simulatorB", "factory": simulatorA_factory, "next simulator": "simulatorA",
-                       "dependency": ["simulatorC", "simulatorA"]},
-                      {"name": "simulatorC", "factory": simulatorC_factory, "next simulator": "simulatorC",
-                       "dependency": ["simulatorB"]}]
+    simulator_list = [{"name": "simulatorA", "factory": simulatorB_factory, "next simulator": "simulatorB", # ["simulatorB", "simulatorC"], # "simulatorB"
+                       "dependency": ["simulatorB", "simulatorC"], "order": 1},
+                      {"name": "simulatorB", "factory": simulatorA_factory, "next simulator": "simulatorC", # ["simulatorA", "simulatorC"], # "simulatorA"
+                       "dependency": ["simulatorC", "simulatorA"], "order": 2},
+                      {"name": "simulatorC", "factory": simulatorC_factory, "next simulator": "simulatorA", # "simulatorB", # "simulatorC
+                       "dependency": ["simulatorB"], "order": 0}]
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(gauss, simulator_list)
+    orchestrator = Orchestrator(gauss, simulator_list, dependencies)
     orchestrator.run_simulation()

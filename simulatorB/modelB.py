@@ -10,8 +10,8 @@ class ModelB:
         try:
             current_data_entryC = data_list[0][state]
             current_data_entryA = data_list[1][state]
-            data_list[1][state] = current_data_entryA + 1 - current_data_entryC * 4
-            return data_list
+            data_list[0][state] = current_data_entryA + 1 - current_data_entryC * 4
+            return data_list[0]
         except TypeError:
             print(colored("------------\nwrong data type given to Model B\ninput type data: "
                           + str(type(data_list[0])) + "\nexpected input type data: list\ninput type time step: "

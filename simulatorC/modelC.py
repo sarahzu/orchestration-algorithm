@@ -10,7 +10,7 @@ class ModelC:
         try:
             current_data_entry = data_list[0][state]
             data_list[0][state] = current_data_entry + 100
-            return data_list
+            return data_list[0]
         except TypeError:
             print(colored("------------\nwrong data type given to Model A\ninput type data: "
                           + str(type(data_list[0])) + "\nexpected input type data: list\ninput type time step: "
