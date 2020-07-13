@@ -15,6 +15,7 @@ class JacobiAlgorithm(StrategyAlgorithm):
                   initial_input_dict, time_step, dependencies, state_history):
 
         new_input_dict = copy.deepcopy(initial_input_dict)
+
         states = {}
         try:
             for simulator_name in agent_simulator_name_list:
@@ -27,6 +28,11 @@ class JacobiAlgorithm(StrategyAlgorithm):
 
         output_state = state + time_step
         while all(min_state <= state < max_state for state in states.values()):
+            # extrapolate the models input data
+            for agent_name in agent_simulator_name_list:
+                extrapolated_input = self.fourier_extrapolation(new_input_dict[agent_name]['data'], state)
+                new_input_dict[agent_name]['data'] = extrapolated_input
+            # run the models with the input data
             for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):
                 # check on which inputs from other models the current model depends on
                 curr_simulator_input = []

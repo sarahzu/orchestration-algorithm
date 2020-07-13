@@ -1,5 +1,8 @@
 import json
 
+import numpy as np
+from numpy import fft
+
 
 class StrategyAlgorithm:
 
@@ -30,3 +33,49 @@ class StrategyAlgorithm:
             "data": simulator_receiver_output_data
         }
         return simulator_receiver_output
+
+    # Function to calculate the linear extrapolation
+    #   taken and modified from: https://www.geeksforgeeks.org/program-to-implement-linear-extrapolation/
+    #   last visited: 2020-07-13)
+    def extrapolate(self, history, state, agent_name):
+        """
+
+        :param history:     {state0: {agent1: {"state": x, "data": [[...], [...], ...]}}, state1: {...}, ...}
+        :param state:
+        :return:
+        """
+        try:
+            print(str(history))
+            y = (history[state][agent_name]["data"][state][state + 1] + (state - history[state][agent_name]["data"][state][state + 1]) /
+                 (history[state][agent_name]["data"][state + 1][state] - history[state][agent_name]["data"][state][state]) *
+                 (history[state][agent_name]["data"][state + 1][state + 1] - history[state][agent_name]["data"][state][state + 1]))
+        except ValueError:
+            return None
+
+        return y
+
+    # method taken and modified from https://gist.github.com/tartakynov/83f3cd8f44208a1856ce
+    # last visited: 2020-07-13
+    def fourier_extrapolation(self, x, n_predict):
+        n = len(x)
+        n_harm = 10  # number of harmonics in model
+        t = np.arange(0, n)
+        p = np.polyfit(t, x, 1)  # find linear trend in x
+        x_notrend = x - p[0] * t  # detrended x
+        x_freqdom = fft.fft(x_notrend)  # detrended x in frequency domain
+        f = fft.fftfreq(n)  # frequencies
+        indexes = range(n)
+        # sort indexes by frequency, lower -> higher
+        sorted(indexes, key=lambda i: np.absolute(f[i]))
+
+        t = np.arange(0, n + n_predict)
+        restored_sig = np.zeros(t.size)
+        for i in indexes[:1 + n_harm * 2]:
+            ampli = np.absolute(x_freqdom[i]) / n  # amplitude
+            phase = np.angle(x_freqdom[i])  # phase
+            restored_sig += ampli * np.cos(2 * np.pi * f[i] * t + phase)
+
+        results = restored_sig + p[0] * t
+        # for i, result in enumerate(results):
+            # results[i] = round(result)
+        return results.tolist()
