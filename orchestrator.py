@@ -146,15 +146,13 @@ class Orchestrator:
             print("final state: " + str(final_state) + "\nfinal data: " + str(final_data))
 
         elif self.algorithm.lower() == 'jacobi':
-            pass
             # run jacobi algorithm
-            # jacobi_algorithm = JacobiAlgorithm()
-            # simulator_inputs = [initial_simulator_input] * 3
-            # final_state, final_data = jacobi_algorithm.algorithm(
-            #     min_state, self.state, max_state, simulator_object_list, simulator_alias_name_list,
-            #     simulator_inputs, self.time_step)
+            jacobi_algorithm = JacobiAlgorithm()
+            final_state, final_data = jacobi_algorithm.algorithm(
+                min_state, self.state, max_state, simulator_order, alias_order,
+                simulator_outputs, self.time_step, self.dependencies, state_history)
 
-            # print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data))
+            print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data))
         else:
             print(colored("------------\nalgorithm \"" + str(self.algorithm) +
                           "\" given to orchestrator is not known.\nplease select one of the following algorithms: "
@@ -265,5 +263,5 @@ if __name__ == '__main__':
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(gauss, simulator_list, dependencies)
+    orchestrator = Orchestrator(jacobi, simulator_list, dependencies)
     orchestrator.run_simulation()
