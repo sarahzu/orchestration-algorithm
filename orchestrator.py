@@ -91,14 +91,14 @@ class Orchestrator:
         # define connection addresses
         # simulator_name_list = ['mainA', 'mainC', 'mainB']
         # simulator_object_list = [agent_simulatorB, agent_simulatorA, agent_simulatorC]
-        simulator_object_list = []
-        simulator_alias_name_list = []
+        # simulator_object_list = []
+        # simulator_alias_name_list = []
         for simulator_dict in self.simulator_list:
             connection_alias = simulator_dict["name"]
             # define agent connection address
             addr_simulator = simulator_dict["agent"].bind('REP', alias=connection_alias,
                                                           handler=simulator_dict["factory"].handler_simulator)
-            # creat simulator order dict
+            # creat simulator order dict and place alias at corresponding order index
             alias_order[simulator_dict["order"]] = connection_alias
 
             # connect next simulator to address of current simulator
@@ -109,6 +109,7 @@ class Orchestrator:
                     # simulator_alias_name_list.append(connection_alias)
                     # simulator_object_list.append(simulator_dict_next["agent"])
 
+                    # put connected simulator in simulator order list at its corresponding order index
                     simulator_order[simulator_dict["order"]] = simulator_dict_next["agent"]
 
         # addr_simulatorA = agent_simulatorA.bind('REP', alias='mainA', handler=simulatorB_factory.handler_simulator)
@@ -132,6 +133,7 @@ class Orchestrator:
 
         # depending on used algorithm, execute different strategy
         # simulator_order = {0: agent_simulatorB, 1: agent_simulatorA}
+        state_history = {self.state: simulator_outputs}
         if self.algorithm.lower() == 'gauss-seidel':
             # run gauss seidel algorithm
             gauss_seidel_algorithm = GaussSeidelAlgorithm()
@@ -139,7 +141,7 @@ class Orchestrator:
             final_state, final_data = gauss_seidel_algorithm.algorithm(
                 min_state, self.state, max_state, simulator_order, alias_order,
                 # initial_simulator_input, self.time_step, self.dependencies)
-                simulator_outputs, self.time_step, self.dependencies)
+                simulator_outputs, self.time_step, self.dependencies, state_history)
 
             print("final state: " + str(final_state) + "\nfinal data: " + str(final_data))
 

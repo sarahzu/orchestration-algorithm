@@ -7,11 +7,11 @@ class StrategyAlgorithm:
         pass
 
     def algorithm(self, min_state, state, max_state, agent_simulator_object_list, agent_simulator_name_list,
-                  initial_input, time_step, dependencies):
+                  initial_input, time_step, dependencies, state_history):
         pass
 
     def execute_simulator_with_output_from_other_simulator(self, agent_simulator_receiver, simulator_sender_input,
-                                                           agent_sender_name, state):
+                                                           agent_sender_name, time_step):
         """
         Execute a receiver agent with input from a sender simulator's agent
 
@@ -19,13 +19,14 @@ class StrategyAlgorithm:
         :param simulator_sender_input:      input for receiving agent coming from the sending agent
         :param agent_sender_name:           name of sending agent
         :param state:                       current time state
+        :param time_step                    current time step
         :return:                            json containing the output data computed with executed simulator
         """
         agent_simulator_receiver.send(agent_sender_name, json.dumps(simulator_sender_input))
         simulator_receiver_output_data = agent_simulator_receiver.recv(agent_sender_name)
 
         simulator_receiver_output = {
-            "state": state,
+            "state": simulator_sender_input['state'] + time_step,
             "data": simulator_receiver_output_data
         }
         return simulator_receiver_output
