@@ -56,14 +56,14 @@ class Orchestrator:
     Orchestrator responsible for linking simulators to agents and running them.
     """
 
-    def __init__(self, algorithm, simulator_list, dependencies):
+    def __init__(self, algorithm, simulator_list):
         self.state = curr_state
         self.time_step = communication_step
         self.data = initial_data
         self.algorithm = algorithm
         print("Initial data: " + str(self.data))
         self.simulator_list = simulator_list
-        self.dependencies = dependencies
+        self.dependencies = {}
 
     def run_simulation(self):
         """
@@ -87,6 +87,7 @@ class Orchestrator:
             # store newly defined agent in corresponding simulator_list entry
             simulator_dict['agent'] = agent_simulator
             simulator_outputs[simulator_dict["name"]] = initial_simulator_input
+            self.dependencies[simulator_dict["name"]] = simulator_dict["dependency"]
 
         # System configuration:
         # define connection addresses
@@ -247,15 +248,6 @@ if __name__ == '__main__':
     # System deployment
     ns = run_nameserver()
 
-    # select all simulators
-    # simulator_names = sorted(extract_simulators())
-    simulator_names = ["simulatorA", "simulatorB", "simulatorC"]
-    # dependencies
-    dependencies = {"simulatorA": ["simulatorB", "simulatorC"],
-                    "simulatorB": ["simulatorC", "simulatorA"],
-                    "simulatorC": ["simulatorB"], #}
-                    "simulatorD": ["simulatorB", "simulatorA"]}
-
     simulator_list = [{"name": "simulatorA", "factory": simulatorB_factory, "next simulator": "simulatorD", # "simulatorB",
                        "dependency": ["simulatorB", "simulatorC"], "order": 1},
                       {"name": "simulatorB", "factory": simulatorA_factory, "next simulator": "simulatorC",
@@ -267,5 +259,5 @@ if __name__ == '__main__':
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(gauss, simulator_list, dependencies)
+    orchestrator = Orchestrator(jacobi, simulator_list)
     orchestrator.run_simulation()
