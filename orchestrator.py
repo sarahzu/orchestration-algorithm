@@ -20,6 +20,7 @@ from simulatorB.simulatorB_factory import SimulatorBFactory
 from simulatorC import simulatorC_factory
 from simulatorC.simulatorC import SimulatorC
 from simulatorC.simulatorC_factory import SimulatorCFactory
+from simulatorD import simulatorD_factory
 from simulatorD.simulatorD import SimulatorD
 from simulatorD.simulatorD_factory import SimulatorDFactory
 from simulatorE.simulatorE import SimulatorE
@@ -252,16 +253,19 @@ if __name__ == '__main__':
     # dependencies
     dependencies = {"simulatorA": ["simulatorB", "simulatorC"],
                     "simulatorB": ["simulatorC", "simulatorA"],
-                    "simulatorC": ["simulatorB"]}
+                    "simulatorC": ["simulatorB"], #}
+                    "simulatorD": ["simulatorB", "simulatorA"]}
 
-    simulator_list = [{"name": "simulatorA", "factory": simulatorB_factory, "next simulator": "simulatorB", # ["simulatorB", "simulatorC"], # "simulatorB"
+    simulator_list = [{"name": "simulatorA", "factory": simulatorB_factory, "next simulator": "simulatorD", # "simulatorB",
                        "dependency": ["simulatorB", "simulatorC"], "order": 1},
-                      {"name": "simulatorB", "factory": simulatorA_factory, "next simulator": "simulatorC", # ["simulatorA", "simulatorC"], # "simulatorA"
-                       "dependency": ["simulatorC", "simulatorA"], "order": 2},
-                      {"name": "simulatorC", "factory": simulatorC_factory, "next simulator": "simulatorA", # "simulatorB", # "simulatorC
-                       "dependency": ["simulatorB"], "order": 0}]
+                      {"name": "simulatorB", "factory": simulatorA_factory, "next simulator": "simulatorC",
+                       "dependency": ["simulatorC", "simulatorA"], "order": 3},#2},
+                      {"name": "simulatorC", "factory": simulatorC_factory, "next simulator": "simulatorA",
+                       "dependency": ["simulatorB"], "order": 0}, #]
+                      {"name": "simulatorD", "factory": simulatorD_factory, "next simulator": "simulatorB",
+                       "dependency": ["simulatorB", "simulatorA"], "order": 2}]
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(jacobi, simulator_list, dependencies)
+    orchestrator = Orchestrator(gauss, simulator_list, dependencies)
     orchestrator.run_simulation()
