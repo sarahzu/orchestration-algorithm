@@ -104,9 +104,13 @@ class Orchestrator:
             alias_order[simulator_dict["order"]] = connection_alias
 
             # connect next simulator to address of current simulator
+            if simulator_dict["order"] != len(self.simulator_list) - 1:
+                next_simulator_order = simulator_dict["order"] + 1
+            else:
+                next_simulator_order = 0
             for simulator_dict_next in self.simulator_list:
                 # check if next simulator is in current simulators next list
-                if simulator_dict_next["name"] == simulator_dict["next simulator"]:
+                if simulator_dict_next["order"] == next_simulator_order:
                     simulator_dict_next["agent"].connect(addr_simulator, alias=connection_alias)
                     # simulator_alias_name_list.append(connection_alias)
                     # simulator_object_list.append(simulator_dict_next["agent"])
@@ -248,16 +252,16 @@ if __name__ == '__main__':
     # System deployment
     ns = run_nameserver()
 
-    simulator_list = [{"name": "simulatorA", "factory": simulatorB_factory, "next simulator": "simulatorD", # "simulatorB",
+    simulator_list = [{"name": "simulatorA", "factory": simulatorB_factory,
                        "dependency": ["simulatorB", "simulatorC"], "order": 1},
-                      {"name": "simulatorB", "factory": simulatorA_factory, "next simulator": "simulatorC",
-                       "dependency": ["simulatorC", "simulatorA"], "order": 3},#2},
-                      {"name": "simulatorC", "factory": simulatorC_factory, "next simulator": "simulatorA",
+                      {"name": "simulatorB", "factory": simulatorA_factory,
+                       "dependency": ["simulatorC", "simulatorA"], "order": 3}, #2},
+                      {"name": "simulatorC", "factory": simulatorC_factory,
                        "dependency": ["simulatorB"], "order": 0}, #]
-                      {"name": "simulatorD", "factory": simulatorD_factory, "next simulator": "simulatorB",
+                      {"name": "simulatorD", "factory": simulatorD_factory,
                        "dependency": ["simulatorB", "simulatorA"], "order": 2}]
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(jacobi, simulator_list)
+    orchestrator = Orchestrator(gauss, simulator_list)
     orchestrator.run_simulation()
