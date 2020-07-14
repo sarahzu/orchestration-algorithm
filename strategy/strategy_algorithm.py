@@ -1,4 +1,5 @@
 import json
+from statistics import median
 
 import numpy as np
 from numpy import fft
@@ -34,25 +35,17 @@ class StrategyAlgorithm:
         }
         return simulator_receiver_output
 
-    # Function to calculate the linear extrapolation
-    #   taken and modified from: https://www.geeksforgeeks.org/program-to-implement-linear-extrapolation/
-    #   last visited: 2020-07-13)
-    def extrapolate(self, history, state, agent_name):
-        """
+    def extrapolate(self, input_data):
+        differences = []
+        for i, data in enumerate(input_data):
+            if i != len(input_data) - 1:
+                differences.append(input_data[i+1] - data)
 
-        :param history:     {state0: {agent1: {"state": x, "data": [[...], [...], ...]}}, state1: {...}, ...}
-        :param state:
-        :return:
-        """
-        try:
-            print(str(history))
-            y = (history[state][agent_name]["data"][state][state + 1] + (state - history[state][agent_name]["data"][state][state + 1]) /
-                 (history[state][agent_name]["data"][state + 1][state] - history[state][agent_name]["data"][state][state]) *
-                 (history[state][agent_name]["data"][state + 1][state + 1] - history[state][agent_name]["data"][state][state + 1]))
-        except ValueError:
-            return None
+        return input_data[-1] + median(differences)
 
-        return y
+    def interpolation(self):
+        # TODO
+        pass
 
     # method taken and modified from https://gist.github.com/tartakynov/83f3cd8f44208a1856ce
     # last visited: 2020-07-13

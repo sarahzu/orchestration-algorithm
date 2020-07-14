@@ -159,5 +159,5 @@ if __name__ == '__main__':
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(gauss, simulator_list, initial_data_dict)
+    orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
     orchestrator.run_simulation()
