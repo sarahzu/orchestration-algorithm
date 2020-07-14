@@ -4,14 +4,14 @@ from termcolor import colored
 class ModelB:
 
     def __init__(self):
-        pass
+        self.initial_data = [5, 6]
 
     def run(self, data_list, state):
         try:
             current_data_entryC = data_list[0][state]
             current_data_entryA = data_list[1][state]
-            data_list[0][state] = current_data_entryA + 1 - current_data_entryC * 4
-            return data_list[0]
+            self.initial_data.append(current_data_entryA + 1 - current_data_entryC * 4)
+            return self.initial_data
         except TypeError:
             print(colored("------------\nwrong data type given to Model B\ninput type data: "
                           + str(type(data_list[0])) + "\nexpected input type data: list\ninput type time step: "

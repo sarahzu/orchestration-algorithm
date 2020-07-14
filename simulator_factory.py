@@ -3,19 +3,6 @@ from json import JSONDecodeError
 
 from termcolor import colored
 
-from simulator import Simulator
-
-
-class SimulatorFactory:
-
-    def create_simulator(self):
-        simulator = Simulator()
-        return simulator
-
-
-def handler_simulator(agent, message):
-    pass
-
 
 def handler_execution(agent, message, simulator):
     """
