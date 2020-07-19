@@ -43,9 +43,11 @@ class StrategyAlgorithm:
 
         return input_data[-1] + median(differences)
 
-    def interpolation(self):
-        # TODO
-        pass
+    def interpolation(self, input_data_prev, input_data_post):
+        prev_value = input_data_prev[-1]
+        post_value = input_data_post[-1]
+
+        return median([prev_value, post_value])
 
     # method taken and modified from https://gist.github.com/tartakynov/83f3cd8f44208a1856ce
     # last visited: 2020-07-13

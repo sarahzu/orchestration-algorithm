@@ -4,7 +4,7 @@ from termcolor import colored
 class ModelC:
 
     def __init__(self):
-        self.initial_data = [9, 16]
+        self.initial_data = [9, 18]
 
     def run(self, data_list, state):
         try:

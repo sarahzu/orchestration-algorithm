@@ -9,6 +9,7 @@ import random
 from termcolor import colored
 from simulatorC import simulatorC_factory
 from simulatorD import simulatorD_factory
+from simulatorE import simulatorE_factory
 from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
 from strategy.jacobi_algorithm import JacobiAlgorithm
 
@@ -43,9 +44,9 @@ class Orchestrator:
     def __init__(self, algorithm, simulator_list, initial_data_dict):
         self.state = curr_state
         self.time_step = communication_step
-        #self.data = initial_data
+        # self.data = initial_data
         self.algorithm = algorithm
-        #print("Initial data: " + str(self.data))
+        # print("Initial data: " + str(self.data))
         self.simulator_list = simulator_list
         self.dependencies = {}
         self.initial_data_dict = initial_data_dict
@@ -58,8 +59,9 @@ class Orchestrator:
         """
 
         # connect all simulators to agents and store agent in simulator_list
-        simulator_list_in_correct_order = [0] * len(simulator_list)
-        alias_list_in_correct_order = [0] * len(simulator_list)
+        simulator_list_in_correct_order = [0] * len(self.simulator_list)
+        alias_list_in_correct_order = [0] * len(self.simulator_list)
+
         simulator_initial_inputs = {}
         for simulator_dict in self.simulator_list:
             agent_simulator = connect_simulator_to_agent_proxy(simulator_dict["name"])
@@ -146,18 +148,26 @@ if __name__ == '__main__':
     # System deployment
     ns = run_nameserver()
 
-    simulator_list = [{"name": "simulatorA", "factory": simulatorB_factory,
+    simulator_list = [{"name": "simulatorA", "factory": simulatorA_factory,
                        "dependency": ["simulatorB", "simulatorC"], "order": 1},
-                      {"name": "simulatorB", "factory": simulatorA_factory,
-                       "dependency": ["simulatorC", "simulatorA"], "order": 3}, #2},
+                      {"name": "simulatorB", "factory": simulatorB_factory,
+                       "dependency": ["simulatorC", "simulatorA"], "order": 3},  # 2},
                       {"name": "simulatorC", "factory": simulatorC_factory,
-                       "dependency": ["simulatorB"], "order": 0}, #]
+                       "dependency": ["simulatorB"], "order": 0},  # ]
                       {"name": "simulatorD", "factory": simulatorD_factory,
                        "dependency": ["simulatorB", "simulatorA"], "order": 2}]
 
-    initial_data_dict = {"simulatorA": [1, 2], "simulatorB": [5, 6], "simulatorC": [9, 16], "simulatorD": [18, 21]}
+    simulator_list_gauss = [{"name": "simulatorC", "factory": simulatorC_factory,
+                             "dependency": ["simulatorE"], "order": 0},
+                            {"name": "simulatorE", "factory": simulatorE_factory,
+                             "dependency": ["simulatorC"], "order": 1}]
+
+    initial_data_dict = {"simulatorA": [1, 2], "simulatorB": [5, 6], "simulatorC": [9], "simulatorD": [18, 21]}
+
+    initial_data_dict_gauss = {"simulatorC": [9, 18], "simulatorE": [8, 19]}
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+    orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
     orchestrator.run_simulation()

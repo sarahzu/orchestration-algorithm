@@ -27,9 +27,23 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                           + str(type(agent_simulator_object_list)) + "\nbut should be of type list"))
             return None, None
 
+        print("ob list: " + str(agent_simulator_name_list))
+
         output_state = state + time_step
         while all(min_state <= state < max_state for state in states.values()):
+            count = 0
+            prev_agent_name = ""
             for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):
+                # first exrapolate
+                if count == 0:
+                    extrapolated_new_input = self.extrapolate(new_input_dict[agent_simulator_name]['data'])
+                    new_input_dict[agent_simulator_name]['data'].append(extrapolated_new_input)
+                # second intrapolate
+                elif count == 1:
+                    intrapolated_new_input = self.interpolation(new_input_dict[prev_agent_name]['data'],
+                                                                new_input_dict[agent_simulator_name]['data'])
+                    new_input_dict[agent_simulator_name]['data'].append(intrapolated_new_input)
+
                 # check on which inputs from other models the current model depends on
                 curr_simulator_input = []
                 for dependency in dependencies[agent_simulator_name]:
@@ -59,6 +73,9 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                 # update state history with new data
                 new_history_state = copy.deepcopy(new_input_dict)
                 state_history[output_state] = new_history_state
+
+                count += 1
+                prev_agent_name = agent_simulator_name
 
             output_state += time_step
 
