@@ -12,6 +12,7 @@ from simulatorD import simulatorD_factory
 from simulatorE import simulatorE_factory
 from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
 from strategy.jacobi_algorithm import JacobiAlgorithm
+from strategy.strategy_algorithm import StrategyAlgorithm
 
 initial_data = random.sample(range(10), 10)
 max_state = 9
@@ -41,15 +42,15 @@ class Orchestrator:
     Orchestrator responsible for linking simulators to agents and running them.
     """
 
-    def __init__(self, algorithm, simulator_list, initial_data_dict):
+    def __init__(self, algorithm, simulator_information_list, initial_simulator_input_data_dict):
         self.state = curr_state
         self.time_step = communication_step
         # self.data = initial_data
-        self.algorithm = algorithm
+        self.used_algorithm = algorithm
         # print("Initial data: " + str(self.data))
-        self.simulator_list = simulator_list
+        self.simulator_information_list = simulator_information_list
         self.dependencies = {}
-        self.initial_data_dict = initial_data_dict
+        self.initial_simulator_input_data_dict = initial_simulator_input_data_dict
 
     def run_simulation(self):
         """
@@ -59,23 +60,23 @@ class Orchestrator:
         """
 
         # connect all simulators to agents and store agent in simulator_list
-        simulator_list_in_correct_order = [0] * len(self.simulator_list)
-        alias_list_in_correct_order = [0] * len(self.simulator_list)
+        simulator_list_in_correct_order = [0] * len(self.simulator_information_list)
+        alias_list_in_correct_order = [0] * len(self.simulator_information_list)
 
         simulator_initial_inputs = {}
-        for simulator_dict in self.simulator_list:
+        for simulator_dict in self.simulator_information_list:
             agent_simulator = connect_simulator_to_agent_proxy(simulator_dict["name"])
             # store newly defined agent in corresponding simulator_list entry
             simulator_dict['agent'] = agent_simulator
             simulator_initial_inputs[simulator_dict["name"]] = {
                 "state": self.state,
-                "data": self.initial_data_dict[simulator_dict["name"]]
+                "data": self.initial_simulator_input_data_dict[simulator_dict["name"]]
             }
             self.dependencies[simulator_dict["name"]] = simulator_dict["dependency"]
 
         # System configuration:
         # define connection addresses
-        for simulator_dict in self.simulator_list:
+        for simulator_dict in self.simulator_information_list:
             connection_alias = simulator_dict["name"]
             # define agent connection address
             addr_simulator = simulator_dict["agent"].bind('REP', alias=connection_alias,
@@ -84,21 +85,21 @@ class Orchestrator:
             alias_list_in_correct_order[simulator_dict["order"]] = connection_alias
 
             # connect next simulator to address of current simulator
-            if simulator_dict["order"] != len(self.simulator_list) - 1:
+            if simulator_dict["order"] != len(self.simulator_information_list) - 1:
                 next_simulator_order = simulator_dict["order"] + 1
             else:
                 next_simulator_order = 0
-            for simulator_dict_next in self.simulator_list:
+            for simulator_dict_next in self.simulator_information_list:
                 # check if next simulator is in current simulators next list
                 if simulator_dict_next["order"] == next_simulator_order:
                     simulator_dict_next["agent"].connect(addr_simulator, alias=connection_alias)
                     # put connected simulator in simulator order list at its corresponding order index
                     simulator_list_in_correct_order[simulator_dict["order"]] = simulator_dict_next["agent"]
 
-        # depending on used algorithm, execute different strategy
+        # depending on used used_algorithm, execute different strategy
         state_history = {self.state: simulator_initial_inputs}
-        if self.algorithm.lower() == 'gauss-seidel':
-            # run gauss seidel algorithm
+        if self.used_algorithm.lower() == 'gauss-seidel':
+            # run gauss seidel used_algorithm
             gauss_seidel_algorithm = GaussSeidelAlgorithm()
             final_state, final_data = gauss_seidel_algorithm.algorithm(
                 min_state, self.state, max_state, simulator_list_in_correct_order, alias_list_in_correct_order,
@@ -106,8 +107,8 @@ class Orchestrator:
 
             print("final state: " + str(final_state) + "\nfinal data: " + str(final_data))
 
-        elif self.algorithm.lower() == 'jacobi':
-            # run jacobi algorithm
+        elif self.used_algorithm.lower() == 'jacobi':
+            # run jacobi used_algorithm
             jacobi_algorithm = JacobiAlgorithm()
             final_state, final_data = jacobi_algorithm.algorithm(
                 min_state, self.state, max_state, simulator_list_in_correct_order, alias_list_in_correct_order,
@@ -115,7 +116,7 @@ class Orchestrator:
 
             print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data))
         else:
-            print(colored("------------\nalgorithm \"" + str(self.algorithm) +
+            print(colored("------------\nused_algorithm \"" + str(self.used_algorithm) +
                           "\" given to orchestrator is not known.\nplease select one of the following algorithms: "
                           + str(known_algorithms) + "\n------------", 'yellow'))
         ns.shutdown()
@@ -165,6 +166,8 @@ if __name__ == '__main__':
     initial_data_dict = {"simulatorA": [1, 2], "simulatorB": [5, 6], "simulatorC": [9, 18], "simulatorD": [18, 21]}
 
     initial_data_dict_gauss = {"simulatorC": [9, 18], "simulatorE": [8, 19]}
+
+    print("s: " + str(StrategyAlgorithm().extrapolate2([5, 6], [[1, 2], [1, 3]], 2)))
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'

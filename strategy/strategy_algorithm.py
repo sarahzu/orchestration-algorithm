@@ -3,6 +3,7 @@ from statistics import median
 
 import numpy as np
 from numpy import fft
+from scipy.interpolate import InterpolatedUnivariateSpline, interpolate
 
 
 class StrategyAlgorithm:
@@ -36,12 +37,27 @@ class StrategyAlgorithm:
         return simulator_receiver_output
 
     def extrapolate(self, input_data):
+        # Todo:
+        # first step 0: A = 1, B = 2 -> so A computed 1 with 2
+        # second step 1: A = 3, B = 3 -> so A computed 3 with 3
+        # -> extrapolation: 2 * x_0 = 1
+        #                   3 * x_1 = 3
+        # -> solve matrix [x_0, x_1] = [0.5, 1]
+        #
+        #
         differences = []
         for i, data in enumerate(input_data):
             if i != len(input_data) - 1:
                 differences.append(input_data[i+1] - data)
 
         return input_data[-1] + median(differences)
+
+    def extrapolate2(self, model_values_1, model_values_2, state):
+        # given values
+        xi = np.array(model_values_1)
+        yi = np.array(model_values_2)
+        f = interpolate.interp1d(xi, yi, fill_value='extrapolate')
+        return f(state)
 
     def interpolation(self, input_data_prev, input_data_post):
         prev_value = input_data_prev[-1]
