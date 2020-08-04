@@ -2,11 +2,22 @@ from termcolor import colored
 
 
 class ModelD:
+    """
+    Example of a model class that is dependent on two other models and performs some easy mathematical computations
+    to the input data.
+    """
 
     def __init__(self):
         self.initial_data = [18, 21]
 
     def run(self, data_list, state):
+        """
+        run model execution
+
+        :param data_list:   (list) model input data list
+        :param state:       (int)  current state
+        :return:            (list) model computed output data list
+        """
         try:
             current_data_entryB = data_list[0][state]
             current_data_entryA = data_list[1][state]

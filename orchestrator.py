@@ -27,8 +27,8 @@ def connect_simulator_to_agent_proxy(simulator_name):
     """
     create agent proxy and connect it to the right simulator name
 
-    :param simulator_name:      name of simulator
-    :return:                    agent object of the corresponding simulator
+    :param simulator_name:      (string) name of simulator
+    :return:                    (agent)  agent object of the corresponding simulator
     """
     # simulator_name = simulator_name.strip('.py')
     run_agent(simulator_name)
@@ -126,7 +126,7 @@ def extract_simulators():
     """
     extract all simulator files in the root folder
 
-    :return:    list with all simulator filenames
+    :return:    (list) list with all simulator filenames
     """
     simulator_list = []
     listing = glob.glob('simulator*')
@@ -167,7 +167,7 @@ if __name__ == '__main__':
 
     initial_data_dict_gauss = {"simulatorC": [9, 18], "simulatorE": [8, 19]}
 
-    print("s: " + str(StrategyAlgorithm().extrapolate2([5, 6], [[1, 2], [1, 3]], 2)))
+    # print("s: " + str(StrategyAlgorithm().extrapolate2([5, 6], [[1, 2], [1, 3]], 2)))
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'

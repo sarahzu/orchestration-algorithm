@@ -6,4 +6,11 @@ class Simulator:
         pass
 
     def run_state(self, state, data):
+        """
+        abstract definition of function that runs model of the simulator
+
+        :param state:   (int)  current state
+        :param data:    (list) data input list for model execution
+        :return:        (list) model output data list
+        """
         pass

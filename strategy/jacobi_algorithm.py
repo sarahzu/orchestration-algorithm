@@ -13,6 +13,26 @@ class JacobiAlgorithm(StrategyAlgorithm):
 
     def algorithm(self, min_state, state, max_state, agent_simulator_object_list, agent_simulator_name_list,
                   initial_input_dict, time_step, dependencies, state_history):
+        """
+        Jacobi implementation of coupling algorithm. First, all simulators inputs at the next state are going to be
+        extrapolated. This extrapolated value is then used to run the current simulation state.
+
+        :param min_state:                       (int)  smallest state possible
+        :param state:                           (int)  current simulation state
+        :param max_state:                       (int)  biggest state possible
+        :param agent_simulator_object_list:     (list) list containing all simulator objects used in this simulation
+        :param agent_simulator_name_list:       (list) list containing all simulator names used in this simulation
+        :param initial_input_dict:              (dict) initial input data used at the start of the coupling algorithm
+                                                       in the form: {simulator: {state:0, data:[...]}, ...}
+        :param time_step:                       (int)  passed time between two states
+        :param dependencies:                    (dict) dictionary containing all dependency information in the form
+                                                       {simulator:[dependent_on_simulator1, dependent_on_simulator2, ...], ...}
+        :param state_history:                   (dict) history dictionary containing all computed data in every
+                                                       simulation state in the form:
+                                                       {0:{simulator: {state:0, data:[...]}, ...}, 1: {...}}
+        :return: states, state_history          (list) list of all computed states
+                                                (dict) and history dictionary containing all computed data
+        """
 
         new_input_dict = copy.deepcopy(initial_input_dict)
 
@@ -49,12 +69,12 @@ class JacobiAlgorithm(StrategyAlgorithm):
 
                 prev_simulator_input = new_input
 
-                # execute simulator B with output from simulator A
+                # execute current simulator with output from its dependent on simulators
                 simulator_output = self.execute_simulator_with_output_from_other_simulator(
                     agent_simulator, new_input, agent_simulator_name, time_step)
-                print(str(agent_simulator_name) + " output: " + str(
-                    simulator_output))  # + " prev output: " + str(prev_simulator_input))
+                print(str(agent_simulator_name) + " output: " + str(simulator_output))
 
+                # add newly computed output to stored inputs
                 new_input_dict[agent_simulator_name] = simulator_output
 
                 # increase simulators state

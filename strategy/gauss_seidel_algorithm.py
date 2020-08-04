@@ -12,6 +12,27 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
 
     def algorithm(self, min_state, state, max_state, agent_simulator_object_list, agent_simulator_name_list,
                   initial_input_dict, time_step, dependencies, state_history):
+        """
+        Gauss-Seidel implementation of coupling algorithm. The sequence of the executed simulators is predefined and
+        extrapolation is used to guess future state outputs and interpolation is used to make the outcome more accurate.
+
+        :param min_state:                       (int)  smallest state possible
+        :param state:                           (int)  current simulation state
+        :param max_state:                       (int)  biggest state possible
+        :param agent_simulator_object_list:     (list) list containing all simulator objects used in this simulation
+        :param agent_simulator_name_list:       (list) list containing all simulator names used in this simulation
+        :param initial_input_dict:              (dict) initial input data used at the start of the coupling algorithm
+                                                       in the form: {simulator: {state:0, data:[...]}, ...}
+        :param time_step:                       (int)  passed time between two states
+        :param dependencies:                    (dict) dictionary containing all dependency information in the form
+                                                       {simulator:[dependent_on_simulator1, dependent_on_simulator2, ...], ...}
+        :param state_history:                   (dict) history dictionary containing all computed data in every
+                                                       simulation state in the form:
+                                                       {0:{simulator: {state:0, data:[...]}, ...}, 1: {...}}
+        :return: states, state_history          (list) list of all computed states
+                                                (dict) and history dictionary containing all computed data
+        """
+
         new_input_dict = copy.deepcopy(initial_input_dict)
 
         prev_simulator_input = initial_input_dict
@@ -85,6 +106,26 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
     def algorithm_dual_dependency(self, min_state, state, max_state, agent_simulator_object_list,
                                   agent_simulator_name_list, initial_input_dict, time_step, dependencies,
                                   state_history):
+        """
+        Gauss-Seidel coupling algorithm but with only dual dependent models.
+
+        :param min_state:                       (int)  smallest state possible
+        :param state:                           (int)  current simulation state
+        :param max_state:                       (int)  biggest state possible
+        :param agent_simulator_object_list:     (list) list containing all simulator objects used in this simulation
+        :param agent_simulator_name_list:       (list) list containing all simulator names used in this simulation
+        :param initial_input_dict:              (dict) initial input data used at the start of the coupling algorithm
+                                                       in the form: {simulator: {state:0, data:[...]}, ...}
+        :param time_step:                       (int)  passed time between two states
+        :param dependencies:                    (dict) dictionary containing all dependency information in the form
+                                                       {simulator:[dependent_on_simulator1, dependent_on_simulator2, ...], ...}
+        :param state_history:                   (dict) history dictionary containing all computed data in every
+                                                       simulation state in the form:
+                                                       {0:{simulator: {state:0, data:[...]}, ...}, 1: {...}}
+        :return: states, state_history          (list) list of all computed states
+                                                (dict) and history dictionary containing all computed data
+        """
+
         new_input_dict = copy.deepcopy(initial_input_dict)
 
         prev_simulator_input = initial_input_dict
