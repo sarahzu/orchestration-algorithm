@@ -1,4 +1,5 @@
 import glob
+import json
 import re
 from os import listdir
 from os.path import isfile, join
@@ -12,7 +13,7 @@ from simulatorD import simulatorD_factory
 from simulatorE import simulatorE_factory
 from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
 from strategy.jacobi_algorithm import JacobiAlgorithm
-from strategy.strategy_algorithm import StrategyAlgorithm
+import jsbeautifier
 
 initial_data = random.sample(range(10), 10)
 max_state = 9
@@ -105,21 +106,29 @@ class Orchestrator:
                 min_state, self.state, max_state, simulator_list_in_correct_order, alias_list_in_correct_order,
                 simulator_initial_inputs, self.time_step, self.dependencies, state_history)
 
-            print("final state: " + str(final_state) + "\nfinal data: " + str(final_data))
-
         elif self.used_algorithm.lower() == 'jacobi':
             # run jacobi used_algorithm
             jacobi_algorithm = JacobiAlgorithm()
             final_state, final_data = jacobi_algorithm.algorithm(
                 min_state, self.state, max_state, simulator_list_in_correct_order, alias_list_in_correct_order,
                 simulator_initial_inputs, self.time_step, self.dependencies, state_history)
-
-            print("final time step: " + str(final_state) + "\nfinal data: " + str(final_data))
         else:
             print(colored("------------\nused_algorithm \"" + str(self.used_algorithm) +
                           "\" given to orchestrator is not known.\nplease select one of the following algorithms: "
                           + str(known_algorithms) + "\n------------", 'yellow'))
+            ns.shutdown()
+            return None
+
         ns.shutdown()
+
+        json_parse_options = jsbeautifier.default_options()
+        json_parse_options.indent_size = 4
+        formatted_final_data = jsbeautifier.beautify(json.dumps(final_data), json_parse_options)
+        print("output state: " + str(final_state) +
+              "\noutput data: " + formatted_final_data)
+
+        with open("simulation_output.json", "w") as outfile:
+            outfile.write(formatted_final_data)
 
 
 def extract_simulators():
@@ -171,7 +180,7 @@ if __name__ == '__main__':
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+    orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
     # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
-    orchestrator = Orchestrator(gauss, simulator_list, initial_data_dict)
+    # orchestrator = Orchestrator(gauss, simulator_list, initial_data_dict)
     orchestrator.run_simulation()

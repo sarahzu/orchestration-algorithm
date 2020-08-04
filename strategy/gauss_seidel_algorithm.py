@@ -46,7 +46,7 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                           + str(type(agent_simulator_object_list)) + "\nbut should be of type list"))
             return None, None
 
-        print("ob list: " + str(agent_simulator_name_list))
+        # print("ob list: " + str(agent_simulator_name_list))
 
         output_state = state + time_step
         while all(min_state <= state < max_state for state in states.values()):
@@ -63,7 +63,7 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                         extrapolated_new_input = self.extrapolate(dependency_data)
                         dependency_data.append(extrapolated_new_input)
                         curr_simulator_input.append(dependency_data)
-                        print("extra: " + str(curr_simulator_input))
+                        # print("extra: " + str(curr_simulator_input))
 
                     # then interpolate
                     else:
@@ -73,7 +73,7 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                         interpolated_new_input = self.interpolation(dependency_data, next_state_dependency_data)
                         next_state_dependency_data[-1] = interpolated_new_input
                         curr_simulator_input.append(next_state_dependency_data)
-                        print("inter: " + str(curr_simulator_input))
+                        # print("inter: " + str(curr_simulator_input))
 
                 # define current state and input for current model
                 current_simulators_state = states[agent_simulator_name]
@@ -82,8 +82,7 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                 # execute current simulator with output from depended on simulator
                 simulator_output = self.execute_simulator_with_output_from_other_simulator(
                     agent_simulator, new_input, agent_simulator_name, time_step)
-                print(str(agent_simulator_name) + " output: " + str(
-                    simulator_output))  # + " prev output: " + str(prev_simulator_input))
+                # print(str(agent_simulator_name) + " output: " + str(simulator_output))
 
                 new_input_dict[agent_simulator_name] = simulator_output
 
@@ -139,7 +138,7 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                           + str(type(agent_simulator_object_list)) + "\nbut should be of type list"))
             return None, None
 
-        print("ob list: " + str(agent_simulator_name_list))
+        # print("ob list: " + str(agent_simulator_name_list))
 
         output_state = state + time_step
         while all(min_state <= state < max_state for state in states.values()):
@@ -172,8 +171,7 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                 # execute simulator B with output from simulator A
                 simulator_output = self.execute_simulator_with_output_from_other_simulator(
                     agent_simulator, new_input, agent_simulator_name, time_step)
-                print(str(agent_simulator_name) + " output: " + str(
-                    simulator_output))  # + " prev output: " + str(prev_simulator_input))
+                # print(str(agent_simulator_name) + " output: " + str(simulator_output))
 
                 new_input_dict[agent_simulator_name] = simulator_output
 
