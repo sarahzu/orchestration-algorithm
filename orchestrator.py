@@ -9,6 +9,7 @@ from simulatorB import simulatorB_factory
 import random
 from termcolor import colored
 from simulatorC import simulatorC_factory
+from simulatorCiw import simulatorCiw_factory
 from simulatorD import simulatorD_factory
 from simulatorE import simulatorE_factory
 from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
@@ -172,15 +173,23 @@ if __name__ == '__main__':
                             {"name": "simulatorE", "factory": simulatorE_factory,
                              "dependency": ["simulatorC"], "order": 1}]
 
+    simulator_list_test = [{"name": "simulatorC", "factory": simulatorC_factory,
+                            "dependency": ["simulatorCiw"], "order": 0},
+                           {"name": "simulatorCiw", "factory": simulatorCiw_factory,
+                            "dependency": ["simulatorC"], "order": 1}]
+
     initial_data_dict = {"simulatorA": [1, 2], "simulatorB": [5, 6], "simulatorC": [9, 18], "simulatorD": [18, 21]}
 
     initial_data_dict_gauss = {"simulatorC": [9, 18], "simulatorE": [8, 19]}
+
+    initial_data_dict_test = {"simulatorC": [1, 2], "simulatorCiw": [6]}
 
     # print("s: " + str(StrategyAlgorithm().extrapolate2([5, 6], [[1, 2], [1, 3]], 2)))
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
     # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
     # orchestrator = Orchestrator(gauss, simulator_list, initial_data_dict)
+    orchestrator = Orchestrator(jacobi, simulator_list_test, initial_data_dict_test)
     orchestrator.run_simulation()
