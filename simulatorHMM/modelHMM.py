@@ -62,7 +62,3 @@ class ModelHMM:
             result.append(np_array[0])
         return result
 
-
-if __name__ == '__main__':
-    model = ModelHMM()
-    model.run([0, 1, 2], 3)
