@@ -9,9 +9,11 @@ from simulatorB import simulatorB_factory
 import random
 from termcolor import colored
 from simulatorC import simulatorC_factory
+from simulatorCT import simulatorCT_factory
 from simulatorCiw import simulatorCiw_factory
 from simulatorD import simulatorD_factory
 from simulatorE import simulatorE_factory
+from simulatorHMM import simulatorHMM_factory
 from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
 from strategy.jacobi_algorithm import JacobiAlgorithm
 import jsbeautifier
@@ -173,16 +175,22 @@ if __name__ == '__main__':
                             {"name": "simulatorE", "factory": simulatorE_factory,
                              "dependency": ["simulatorC"], "order": 1}]
 
-    simulator_list_test = [{"name": "simulatorC", "factory": simulatorC_factory,
+    simulator_list_test = [{"name": "simulatorCT", "factory": simulatorCT_factory,
                             "dependency": ["simulatorCiw"], "order": 0},
                            {"name": "simulatorCiw", "factory": simulatorCiw_factory,
-                            "dependency": ["simulatorC"], "order": 1}]
+                            "dependency": ["simulatorCT"], "order": 1}]
+
+    simulator_list_test_2 = [{"name": "simulatorHMM", "factory": simulatorHMM_factory,
+                            "dependency": ["simulatorCiw"], "order": 0},
+                           {"name": "simulatorCiw", "factory": simulatorCiw_factory,
+                            "dependency": ["simulatorHMM"], "order": 1}]
 
     initial_data_dict = {"simulatorA": [1, 2], "simulatorB": [5, 6], "simulatorC": [9, 18], "simulatorD": [18, 21]}
 
     initial_data_dict_gauss = {"simulatorC": [9, 18], "simulatorE": [8, 19]}
 
-    initial_data_dict_test = {"simulatorC": [1, 2], "simulatorCiw": [6]}
+    initial_data_dict_test = {"simulatorCT": [1, 2], "simulatorCiw": [6]}
+    initial_data_dict_test_2 = {"simulatorHMM": [1, 2], "simulatorCiw": [6]}
 
     # print("s: " + str(StrategyAlgorithm().extrapolate2([5, 6], [[1, 2], [1, 3]], 2)))
 
@@ -191,5 +199,7 @@ if __name__ == '__main__':
     # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
     # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
     # orchestrator = Orchestrator(gauss, simulator_list, initial_data_dict)
-    orchestrator = Orchestrator(jacobi, simulator_list_test, initial_data_dict_test)
+    # orchestrator = Orchestrator(jacobi, simulator_list_test, initial_data_dict_test)
+    orchestrator = Orchestrator(jacobi, simulator_list_test_2, initial_data_dict_test_2)
+
     orchestrator.run_simulation()
