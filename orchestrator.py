@@ -190,7 +190,7 @@ if __name__ == '__main__':
     initial_data_dict_gauss = {"simulatorC": [9, 18], "simulatorE": [8, 19]}
 
     initial_data_dict_test = {"simulatorCT": [1, 2], "simulatorCiw": [6]}
-    initial_data_dict_test_2 = {"simulatorHMM": [1, 2], "simulatorCiw": [6]}
+    initial_data_dict_test_2 = {"simulatorHMM": [2.561081835113113, 4.20021128824225862, -1.288692891201176, 8.717137161312187, 2.429789708506107], "simulatorCiw": [0.20627254772273172]}
 
     # print("s: " + str(StrategyAlgorithm().extrapolate2([5, 6], [[1, 2], [1, 3]], 2)))
 

@@ -1,3 +1,5 @@
+from statistics import median
+
 import matplotlib.pyplot as plt
 import numpy as np
 from hmmlearn import hmm
@@ -43,7 +45,7 @@ class ModelHMM:
                           [9.0, 10.0],
                           [11.0, -1.0]])
         # The covariance of each component
-        covars = .5 * np.tile(np.identity(2), (4, 1, 1)) * multiplier
+        covars = .5 * np.tile(np.identity(2), (4, 1, 1)) # * multiplier
 
         # Build an HMM instance and set parameters
         model = hmm.GaussianHMM(n_components=4, covariance_type="full")
@@ -56,9 +58,10 @@ class ModelHMM:
         model.covars_ = covars
 
         # Generate samples
-        X, Z = model.sample(state)
+        X, Z = model.sample(5)
         result = []
         for np_array in X:
-            result.append(np_array[0])
+            result.append([np_array[0], np_array[1]])
+            # result.append(median(np_array))
         return result
 
