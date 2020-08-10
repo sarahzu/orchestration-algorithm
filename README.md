@@ -3,11 +3,24 @@ This project implements a co-simulation orchestration algorithms capable of hybr
 
 The file _orchestrator.py_ is the main file of the project. It includes the _Orchestrator_ class responsible for running the simulation. The _Orchestrator_ class needs the following parameter values:
 1. (String) The name of the used coupling algorithm: either _"gauss-seidel"_ or _"jacobi"_
-2. (List) A list containing the needed information about the used simulators: name, which factory class is used to create the simulator and the order of execution. The list is structured in the form: 
-[{"name": "simulatorA", "factory": simulatorA_factory, "dependency": ["simulatorB"], "order": 0},
-{"name": "simulatorB", "factory": simulatorB_factory, "dependency": ["simulatorA"], "order": 1}]
+2. (List) A list containing the needed information about the used simulators: name, which factory class is used to create the simulator, on which other simulator's output it depends on and the order of execution. The list is structured in the form: 
+
+    [
+    
+        {"name": "simulatorA", "factory": simulatorA_factory, "dependency": ["simulatorB"], "order": 0}, 
+        
+        {"name": "simulatorB", "factory": simulatorB_factory, "dependency": ["simulatorA"], "order": 1}
+        
+    ]
 3. (Dictionary) The initial data for every simulator in the form: 
-{"simulatorA": [1, 2], "simulatorB": [5, 6]}
+
+    {
+    
+        "simulatorA": [1, 2], 
+        
+        "simulatorB": [5, 6]
+        
+    }
 
 The _orchestrator.py_ file contains a main function which runs one use case of the simulation. The function defines an Orchestration objects and calls its run function. The code structure is as follows:
 ```
