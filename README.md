@@ -27,4 +27,5 @@ Per default, the _Orchestrator_ simulates two models:
 
 ## References
 [1] Palmer, Geraint I., et al. "Ciw: An open-source discrete event simulation library." _Journal of Simulation_ 13.1 (2019): 68-82.
+
 [2] hmmlearn developers (2010). hmmlearn. [https://hmmlearn.readthedocs.io/en/latest/](https://hmmlearn.readthedocs.io/en/latest/). Last visited: 2020-08-10
