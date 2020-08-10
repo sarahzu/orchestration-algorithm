@@ -1,4 +1,4 @@
-from hyprid_wrapper import HybridWrapper
+from hybrid_wrapper import HybridWrapper
 from simulatorHMM.modelHMM import ModelHMM
 
 

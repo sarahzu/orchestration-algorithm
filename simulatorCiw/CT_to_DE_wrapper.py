@@ -1,5 +1,5 @@
 import numpy as np
-from hyprid_wrapper import HybridWrapper
+from hybrid_wrapper import HybridWrapper
 from simulatorCiw.modelCiw import ModelCiw
 
 
