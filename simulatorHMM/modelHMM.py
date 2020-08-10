@@ -8,9 +8,15 @@ from hmmlearn import hmm
 class ModelHMM:
 
     def __init__(self):
-        pass
+        self.data = [0.6, 0.3, 0.1, 0.0]
 
-    def run(self, data_list, state):
+    def get_data(self):
+        return self.data
+
+    def set_data(self, data):
+        self.data = data
+
+    def run(self, data_list):
         """
         CT model cenerating sample points from a Hiden Markov Model (HMM)
 
@@ -19,20 +25,20 @@ class ModelHMM:
         last visited: 09.08.2020
 
         :param data_list:   (list) input data list
-        :param state:       (int)  current state
         :return:            (list) output data list
         """
-        multiplier = 0
-        if len(data_list) == 1:
-            if len(data_list[0]) == 1:
-                multiplier = data_list[0][0]
-            else:
-                multiplier = data_list[0][state]
-        else:
-            for data_points in data_list:
-               multiplier += data_points[state]
+        # multiplier = 0
+        # if len(data_list) == 1:
+        #     if len(data_list[0]) == 1:
+        #         multiplier = data_list[0][0]
+        #     else:
+        #         multiplier = data_list[0][state]
+        # else:
+        #     for data_points in data_list:
+        #        multiplier += data_points[state]
 
-        startprob = np.array([0.6, 0.3, 0.1, 0.0])
+        # startprob = np.array([0.6, 0.3, 0.1, 0.0])
+        startprob = np.array(data_list)
         # The transition matrix, note that there are no transitions possible
         # between component 1 and 3
         transmat = np.array([[0.7, 0.2, 0.0, 0.1],
@@ -63,5 +69,6 @@ class ModelHMM:
         for np_array in X:
             result.append([np_array[0], np_array[1]])
             # result.append(median(np_array))
+        # self.data = result
         return result
 

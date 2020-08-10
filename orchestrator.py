@@ -196,9 +196,8 @@ if __name__ == '__main__':
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
     # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
-    # orchestrator = Orchestrator(gauss, simulator_list, initial_data_dict)
+    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
     # orchestrator = Orchestrator(jacobi, simulator_list_test, initial_data_dict_test)
     orchestrator = Orchestrator(jacobi, simulator_list_test_2, initial_data_dict_test_2)
 
