@@ -13,9 +13,6 @@ class SimulatorE(Simulator, Agent):
         super().__init__()
         self.modelE = ModelE()
 
-    def get_data(self):
-        return self.data
-
     def run_state(self, state, data):
         """
         start execution of model E
@@ -25,6 +22,5 @@ class SimulatorE(Simulator, Agent):
         :return:        (list)   model output data list
         """
         output = self.modelE.run(data, state)
-        self.data = output
         return output
 

@@ -1,26 +1,25 @@
 from osbrain import Agent
 
-from simulatorC.modelC import ModelC
 from simulator import Simulator
+from simulatorCT.modelCT import ModelCT
 
 
-class SimulatorC(Simulator, Agent):
+class SimulatorCT(Simulator, Agent):
     """
-    Specific simulator class for the model C
+    Specific simulator class for the model D
     """
 
     def __init__(self):
         super().__init__()
-        self.modelC = ModelC()
+        self.model = ModelCT()
 
     def run_state(self, state, data):
         """
-        start execution of model C
+        start execution of model D
 
         :param state:   (string) current state
         :param data:    (list)   input data list used to run the model
         :return:        (list)   model output data list
         """
-        output = self.modelC.run(data, state)
+        output = self.model.run(data, state)
         return output
-

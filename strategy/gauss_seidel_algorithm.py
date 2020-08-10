@@ -147,8 +147,8 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
             for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):
                 # first exrapolate
                 if count == 0:
-                    extrapolated_new_input = self.extrapolate(new_input_dict[agent_simulator_name]['data'])
-                    new_input_dict[agent_simulator_name]['data'].append(extrapolated_new_input)
+                    new_input_dict[agent_simulator_name]['data'] = self.extrapolate(new_input_dict[agent_simulator_name]['data'])
+                    # new_input_dict[agent_simulator_name]['data'].append(extrapolated_new_input)
                 # second intrapolate
                 elif count == 1:
                     intrapolated_new_input = self.interpolation(new_input_dict[prev_agent_name]['data'],

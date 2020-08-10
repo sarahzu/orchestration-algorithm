@@ -13,9 +13,6 @@ class SimulatorD(Simulator, Agent):
         super().__init__()
         self.modelD = ModelD()
 
-    def get_data(self):
-        return self.data
-
     def run_state(self, state, data):
         """
         start execution of model D
@@ -25,6 +22,5 @@ class SimulatorD(Simulator, Agent):
         :return:        (list)   model output data list
         """
         output = self.modelD.run(data, state)
-        self.data = output
         return output
 

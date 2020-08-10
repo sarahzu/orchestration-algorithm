@@ -51,9 +51,9 @@ class JacobiAlgorithm(StrategyAlgorithm):
             # extrapolate the models input data
             for agent_name in agent_simulator_name_list:
                 # extrapolated_input = self.fourier_extrapolation(new_input_dict[agent_name]['data'], state)
-                extrapolated_new_input = self.extrapolate(new_input_dict[agent_name]['data'])
-                new_input_dict[agent_name]['data'].append(extrapolated_new_input)
-                # print("new extrapolated input: " + str(new_input_dict))
+                new_input_dict[agent_name]['data'] = self.extrapolate(new_input_dict[agent_name]['data'])
+                # new_input_dict[agent_name]['data'].append(extrapolated_new_input)
+
             #  run the models with the input data
             for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):
                 # check on which inputs from other models the current model depends on

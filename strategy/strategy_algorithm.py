@@ -1,4 +1,5 @@
 import json
+import statistics
 from statistics import median
 
 import numpy as np
@@ -64,11 +65,14 @@ class StrategyAlgorithm:
         :return:            (int)  next computed value
         """
         differences = []
-        for i, data in enumerate(input_data):
-            if i != len(input_data) - 1:
-                differences.append(input_data[i+1] - data)
-
-        return input_data[-1] + median(differences)
+        try:
+            for i, data in enumerate(input_data):
+                if i != len(input_data) - 1:
+                    differences.append(input_data[i+1] - data)
+            input_data.append(input_data[-1] + median(differences))
+            return input_data
+        except (statistics.StatisticsError, TypeError) as e:
+            return input_data
 
     # def extrapolate2(self, model_values_1, model_values_2, state):
     #     # given values
