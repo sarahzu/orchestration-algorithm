@@ -1,6 +1,6 @@
 from osbrain import Agent
 
-from CT_Simulators.simulatorLG.modelLG import ModelLG
+from CT_Simulators.simulatorLG.LG_wrapper import LGWrapper
 from simulator import Simulator
 
 
@@ -11,7 +11,7 @@ class SimulatorLG(Simulator, Agent):
 
     def __init__(self):
         super().__init__()
-        self.model = ModelLG()
+        self.wrapper = LGWrapper()
 
     def run_state(self, state, data):
         """
@@ -21,5 +21,5 @@ class SimulatorLG(Simulator, Agent):
         :param data:    (list)   input data list used to run the model
         :return:        (list)   model output data list
         """
-        output = self.model.run(data, state)
+        output = self.wrapper.run(data, state)
         return output

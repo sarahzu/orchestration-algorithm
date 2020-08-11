@@ -14,5 +14,6 @@ class DeToCtWrapper(HybridWrapper):
         ct_data[2] += de_data[0][0]
         ct_data[3] -= de_data[0][0]
         output = self.model.run(ct_data)
-        return output
+        result = {"output": output, "transformed input": ct_data}
+        return result
 

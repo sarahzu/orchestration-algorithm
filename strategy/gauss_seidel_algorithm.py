@@ -56,7 +56,7 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                     # gather the input data
                     # first exrapolate or extrapolate if no interpolation has taken place
                     if states[simulator_name_of_dependency] != state:
-                        dependency_data = state_history[state][simulator_name_of_dependency]['data']
+                        dependency_data = state_history[state][simulator_name_of_dependency]['output data']
                         print(dependency_data)
                         extrapolated_new_input = self.extrapolate(dependency_data)
                         try:
@@ -67,16 +67,16 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                         curr_simulator_input.append(dependency_data)
                     # then interpolate
                     else:
-                        dependency_data = state_history[state][simulator_name_of_dependency]['data']
+                        dependency_data = state_history[state][simulator_name_of_dependency]['output data']
                         next_state_dependency_data = \
-                        state_history[states[agent_simulator_name]][simulator_name_of_dependency]['data']
+                        state_history[states[agent_simulator_name]][simulator_name_of_dependency]['output data']
                         interpolated_new_input = self.interpolation(dependency_data, next_state_dependency_data)
                         next_state_dependency_data[-1] = interpolated_new_input
                         curr_simulator_input.append(next_state_dependency_data)
 
                 # define current state and input for current model
                 current_simulators_state = states[agent_simulator_name]
-                new_input = {"state": current_simulators_state, "data": curr_simulator_input}
+                new_input = {"state": current_simulators_state, "output data": curr_simulator_input}
 
                 # execute current simulator with output from depended on simulator
                 simulator_output = self.execute_simulator_with_output_from_other_simulator(

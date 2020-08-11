@@ -2,10 +2,6 @@ import json
 import statistics
 from statistics import median
 
-import numpy as np
-from numpy import fft
-from scipy.interpolate import InterpolatedUnivariateSpline, interpolate
-
 
 class StrategyAlgorithm:
 
@@ -22,7 +18,7 @@ class StrategyAlgorithm:
         :param max_state:                       (int)  biggest state possible
         :param agent_simulator_object_list:     (list) list containing all simulator objects used in this simulation
         :param agent_simulator_name_list:       (list) list containing all simulator names used in this simulation
-        :param initial_input_dict:              (dict) initial input data used at the start of the coupling algorithm
+        :param initial_input:                   (dict) initial input data used at the start of the coupling algorithm
                                                        in the form: {simulator: {state:0, data:[...]}, ...}
         :param time_step:                       (int)  passed time between two states
         :param dependencies:                    (dict) dictionary containing all dependency information in the form
@@ -50,11 +46,20 @@ class StrategyAlgorithm:
         """
         agent_simulator_receiver.send(agent_sender_name, json.dumps(simulator_sender_input))
         simulator_receiver_output_data = agent_simulator_receiver.recv(agent_sender_name)
-
-        simulator_receiver_output = {
-            "state": simulator_sender_input['state'] + time_step,
-            "data": simulator_receiver_output_data
-        }
+        try:
+            simulator_receiver_output = {
+                # "state": simulator_sender_input['state'] + time_step,
+                "input data": simulator_sender_input['output data'],
+                "transformed input data": simulator_receiver_output_data['transformed input'],
+                "output data": simulator_receiver_output_data['output']
+            }
+        except TypeError:
+            simulator_receiver_output = {
+                # "state": simulator_sender_input['state'] + time_step,
+                "input data": simulator_sender_input['output data'],
+                "transformed input data": [],
+                "output data": simulator_receiver_output_data
+            }
         return simulator_receiver_output
 
     def extrapolate(self, input_data):

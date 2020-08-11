@@ -24,10 +24,10 @@ class ModelB:
         try:
             current_data_entry_1 = data[0]
             current_data_entry_2 = data[1]
-            self.initial_data[0] += current_data_entry_2 + 1 - current_data_entry_1 * 4
-            self.initial_data[1] -= current_data_entry_2 + 1 - current_data_entry_1 * 4
-            self.initial_data[2] -= current_data_entry_2 + 4 - current_data_entry_1 * 3
-            self.initial_data[4] += current_data_entry_2 + 4 - current_data_entry_1 * 3
+            self.initial_data[0] += current_data_entry_2 + 1 - current_data_entry_1 * 4 * state
+            self.initial_data[1] -= current_data_entry_2 + 1 - current_data_entry_1 * 4 * state
+            self.initial_data[2] -= current_data_entry_2 + 4 - current_data_entry_1 * 3 * state
+            self.initial_data[4] += current_data_entry_2 + 4 - current_data_entry_1 * 3 * state
             return self.initial_data
 
         except IndexError:

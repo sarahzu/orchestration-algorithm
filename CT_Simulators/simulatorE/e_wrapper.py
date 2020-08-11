@@ -12,4 +12,5 @@ class EWrapper(HybridWrapper):
         initial_data[0] -= data_list[0][0]
         ct_data = initial_data
         output = self.model.run(ct_data)
-        return output
+        result = {"output": output, "transformed input": ct_data}
+        return result

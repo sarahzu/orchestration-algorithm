@@ -27,6 +27,7 @@ communication_step = 1
 
 known_algorithms = ['Gauss-Seidel', 'Jacobi']
 
+transformed_input_data = []
 
 def connect_simulator_to_agent_proxy(simulator_name):
     """
@@ -74,8 +75,8 @@ class Orchestrator:
             # store newly defined agent in corresponding simulator_list entry
             simulator_dict['agent'] = agent_simulator
             simulator_initial_inputs[simulator_dict["name"]] = {
-                "state": self.state,
-                "data": self.initial_simulator_input_data_dict[simulator_dict["name"]]
+                # "state": self.state,
+                "output data": self.initial_simulator_input_data_dict[simulator_dict["name"]]
             }
             self.dependencies[simulator_dict["name"]] = simulator_dict["dependency"]
 
@@ -202,7 +203,7 @@ if __name__ == '__main__':
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
     # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
-    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
-    orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
+    orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+    # orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
 
     orchestrator.run_simulation()

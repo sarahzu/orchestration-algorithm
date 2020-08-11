@@ -13,4 +13,5 @@ class BWrapper(HybridWrapper):
         initial_data[1] += de_data[1][0]
         ct_data = initial_data
         output = self.model.run(ct_data, state)
-        return output
+        result = {"output": output, "transformed input": ct_data}
+        return result

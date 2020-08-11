@@ -17,5 +17,6 @@ class CtToDeWrapper(HybridWrapper):
         else:
             event = -1
 
-        output = self.model.run(event, state)
-        return [output]
+        output = [self.model.run(event, state)]
+        result = {"output": output, "transformed input": event}
+        return result
