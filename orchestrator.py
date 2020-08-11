@@ -5,6 +5,7 @@ from os import listdir
 from os.path import isfile, join
 from osbrain import run_nameserver, run_agent
 
+from CT_Simulators.simulatorE import simulatorE_factory
 from CT_Simulators.simulatorLG import simulatorLG_factory
 from DE_simulators.simulatorA import simulatorA_factory
 from CT_Simulators.simulatorB import simulatorB_factory
@@ -170,22 +171,21 @@ if __name__ == '__main__':
                       {"name": "simulatorD", "factory": simulatorD_factory,
                        "dependency": ["simulatorB", "simulatorA"], "order": 2}]
 
-    # simulator_list_gauss = [{"name": "simulatorC", "factory": simulatorC_factory,
-    #                          "dependency": ["simulatorE"], "order": 0},
-    #                         {"name": "simulatorE", "factory": simulatorE_factory,
-    #                          "dependency": ["simulatorC"], "order": 1}]
+    simulator_list_gauss = [{"name": "simulatorC", "factory": simulatorC_factory,
+                             "dependency": ["simulatorE"], "order": 0},
+                            {"name": "simulatorE", "factory": simulatorE_factory,
+                             "dependency": ["simulatorC"], "order": 1}]
 
     simulator_list_hybrid = [{"name": "simulatorHMM", "factory": simulatorHMM_factory,
                             "dependency": ["simulatorCiw"], "order": 0},
                              {"name": "simulatorCiw", "factory": simulatorCiw_factory,
                             "dependency": ["simulatorHMM"], "order": 1},
                              {"name": "simulatorLG", "factory": simulatorLG_factory,
-                            "dependency": ["simulatorHMM"], "order": 2}
-                             ]
+                            "dependency": ["simulatorHMM"], "order": 2}]
 
     initial_data_dict = {"simulatorA": 2, "simulatorB": [5, 6], "simulatorC": 6, "simulatorD": [18, 21]}
 
-    initial_data_dict_gauss = {"simulatorC": [9, 18], "simulatorE": [8, 19]}
+    initial_data_dict_gauss = {"simulatorC": 6, "simulatorE": [8, 19]}
 
     initial_data_dict_test_hybrid = {
         "simulatorHMM": [
@@ -199,12 +199,10 @@ if __name__ == '__main__':
         "simulatorLG": [0.08, 0.09]
     }
 
-    # print("s: " + str(StrategyAlgorithm().extrapolate2([5, 6], [[1, 2], [1, 3]], 2)))
-
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
     # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
-    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
     orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
 
     orchestrator.run_simulation()

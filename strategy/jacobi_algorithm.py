@@ -50,9 +50,7 @@ class JacobiAlgorithm(StrategyAlgorithm):
         while all(min_state <= state < max_state for state in states.values()):
             # extrapolate the models input data
             for agent_name in agent_simulator_name_list:
-                # extrapolated_input = self.fourier_extrapolation(new_input_dict[agent_name]['data'], state)
                 new_input_dict[agent_name]['data'] = self.extrapolate(new_input_dict[agent_name]['data'])
-                # new_input_dict[agent_name]['data'].append(extrapolated_new_input)
 
             #  run the models with the input data
             for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):

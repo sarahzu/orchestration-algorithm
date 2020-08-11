@@ -18,7 +18,7 @@ class ModelC:
         :return:            (list) model computed output data list
         """
         try:
-            return math.pow(event, 2) * state
+            return event + 2 * state
         except TypeError:
             print(colored("------------\n "
                           "the given event is not in the expected format:\nexpected: integer\nexpected: "
