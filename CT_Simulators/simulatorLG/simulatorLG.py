@@ -1,17 +1,17 @@
 from osbrain import Agent
 
 from simulator import Simulator
-from simulatorHMM.DE_to_CT_wrapper import DeToCtWrapper
+from simulatorCT.modelCT import ModelCT
 
 
-class SimulatorHMM(Simulator, Agent):
+class SimulatorCT(Simulator, Agent):
     """
     Specific simulator class for the model D
     """
 
     def __init__(self):
         super().__init__()
-        self.wrapper = DeToCtWrapper()
+        self.model = ModelCT()
 
     def run_state(self, state, data):
         """
@@ -21,5 +21,5 @@ class SimulatorHMM(Simulator, Agent):
         :param data:    (list)   input data list used to run the model
         :return:        (list)   model output data list
         """
-        output = self.wrapper.run(data, state)
+        output = self.model.run(data, state)
         return output

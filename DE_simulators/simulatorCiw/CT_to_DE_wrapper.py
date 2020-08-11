@@ -1,6 +1,6 @@
 import numpy as np
 from hybrid_wrapper import HybridWrapper
-from simulatorCiw.modelCiw import ModelCiw
+from DE_simulators.simulatorCiw.modelCiw import ModelCiw
 
 
 class CtToDeWrapper(HybridWrapper):

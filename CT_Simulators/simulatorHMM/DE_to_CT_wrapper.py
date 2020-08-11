@@ -1,5 +1,5 @@
 from hybrid_wrapper import HybridWrapper
-from simulatorHMM.modelHMM import ModelHMM
+from CT_Simulators.simulatorHMM.modelHMM import ModelHMM
 
 
 class DeToCtWrapper(HybridWrapper):

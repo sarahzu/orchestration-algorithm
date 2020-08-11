@@ -1,4 +1,4 @@
-from simulatorCiw.simulatorCiw import SimulatorCiw
+from DE_simulators.simulatorCiw.simulatorCiw import SimulatorCiw
 from simulator_factory import handler_execution
 
 simulator = SimulatorCiw()

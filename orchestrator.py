@@ -9,10 +9,10 @@ from simulatorB import simulatorB_factory
 import random
 from termcolor import colored
 from simulatorC import simulatorC_factory
-from simulatorCiw import simulatorCiw_factory
+from DE_simulators.simulatorCiw import simulatorCiw_factory
 from simulatorD import simulatorD_factory
 from simulatorE import simulatorE_factory
-from simulatorHMM import simulatorHMM_factory
+from CT_Simulators.simulatorHMM import simulatorHMM_factory
 from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
 from strategy.jacobi_algorithm import JacobiAlgorithm
 import jsbeautifier

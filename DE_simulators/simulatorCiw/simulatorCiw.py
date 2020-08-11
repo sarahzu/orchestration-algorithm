@@ -1,7 +1,7 @@
 from osbrain import Agent
 
+from DE_simulators.simulatorCiw.CT_to_DE_wrapper import CtToDeWrapper
 from simulator import Simulator
-from simulatorCiw.CT_to_DE_wrapper import CtToDeWrapper
 
 
 class SimulatorCiw(Simulator, Agent):
