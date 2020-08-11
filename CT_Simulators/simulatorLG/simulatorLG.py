@@ -1,17 +1,17 @@
 from osbrain import Agent
 
+from CT_Simulators.simulatorLG.modelLG import ModelLG
 from simulator import Simulator
-from simulatorCT.modelCT import ModelCT
 
 
-class SimulatorCT(Simulator, Agent):
+class SimulatorLG(Simulator, Agent):
     """
     Specific simulator class for the model D
     """
 
     def __init__(self):
         super().__init__()
-        self.model = ModelCT()
+        self.model = ModelLG()
 
     def run_state(self, state, data):
         """

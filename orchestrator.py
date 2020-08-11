@@ -4,14 +4,15 @@ import re
 from os import listdir
 from os.path import isfile, join
 from osbrain import run_nameserver, run_agent
-from simulatorA import simulatorA_factory
-from simulatorB import simulatorB_factory
+
+from CT_Simulators.simulatorLG import simulatorLG_factory
+from DE_simulators.simulatorA import simulatorA_factory
+from CT_Simulators.simulatorB import simulatorB_factory
 import random
 from termcolor import colored
-from simulatorC import simulatorC_factory
+from DE_simulators.simulatorC import simulatorC_factory
 from DE_simulators.simulatorCiw import simulatorCiw_factory
-from simulatorD import simulatorD_factory
-from simulatorE import simulatorE_factory
+from CT_Simulators.simulatorD import simulatorD_factory
 from CT_Simulators.simulatorHMM import simulatorHMM_factory
 from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
 from strategy.jacobi_algorithm import JacobiAlgorithm
@@ -169,21 +170,34 @@ if __name__ == '__main__':
                       {"name": "simulatorD", "factory": simulatorD_factory,
                        "dependency": ["simulatorB", "simulatorA"], "order": 2}]
 
-    simulator_list_gauss = [{"name": "simulatorC", "factory": simulatorC_factory,
-                             "dependency": ["simulatorE"], "order": 0},
-                            {"name": "simulatorE", "factory": simulatorE_factory,
-                             "dependency": ["simulatorC"], "order": 1}]
+    # simulator_list_gauss = [{"name": "simulatorC", "factory": simulatorC_factory,
+    #                          "dependency": ["simulatorE"], "order": 0},
+    #                         {"name": "simulatorE", "factory": simulatorE_factory,
+    #                          "dependency": ["simulatorC"], "order": 1}]
 
     simulator_list_hybrid = [{"name": "simulatorHMM", "factory": simulatorHMM_factory,
                             "dependency": ["simulatorCiw"], "order": 0},
                              {"name": "simulatorCiw", "factory": simulatorCiw_factory,
-                            "dependency": ["simulatorHMM"], "order": 1}]
+                            "dependency": ["simulatorHMM"], "order": 1},
+                             {"name": "simulatorLG", "factory": simulatorLG_factory,
+                            "dependency": ["simulatorHMM"], "order": 2}
+                             ]
 
-    initial_data_dict = {"simulatorA": [1, 2], "simulatorB": [5, 6], "simulatorC": [9, 18], "simulatorD": [18, 21]}
+    initial_data_dict = {"simulatorA": 2, "simulatorB": [5, 6], "simulatorC": 6, "simulatorD": [18, 21]}
 
     initial_data_dict_gauss = {"simulatorC": [9, 18], "simulatorE": [8, 19]}
 
-    initial_data_dict_test_hybrid = {"simulatorHMM": [2.561081835113113, 4.20021128824225862, -1.288692891201176, 8.717137161312187, 2.429789708506107], "simulatorCiw": [0.20627254772273172]}
+    initial_data_dict_test_hybrid = {
+        "simulatorHMM": [
+                [-0.17307679866920092, -1.0046970164746332],
+                [11.163840145390036, -1.0574433375980758],
+                [-0.5244943350032614, -0.07812436573441134],
+                [0.3396166360722303, -0.10286418783911368],
+                [0.562790707279984, 0.41179374282339065]
+            ],
+        "simulatorCiw": [0.20627254772273172],
+        "simulatorLG": [0.08, 0.09]
+    }
 
     # print("s: " + str(StrategyAlgorithm().extrapolate2([5, 6], [[1, 2], [1, 3]], 2)))
 
@@ -191,7 +205,6 @@ if __name__ == '__main__':
     gauss = 'gauss-seidel'
     # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
     # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
-    # orchestrator = Orchestrator(jacobi, simulator_list_test, initial_data_dict_test)
     orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
 
     orchestrator.run_simulation()

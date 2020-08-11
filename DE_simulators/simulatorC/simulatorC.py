@@ -1,25 +1,26 @@
 from osbrain import Agent
 
-from simulatorB.modelB import ModelB
+from DE_simulators.simulatorC.c_wrapper import CWrapper
 from simulator import Simulator
 
 
-class SimulatorB(Simulator, Agent):
+class SimulatorC(Simulator, Agent):
     """
-    Specific simulator class for the model B
+    Specific simulator class for the model C
     """
 
     def __init__(self):
         super().__init__()
-        self.modelB = ModelB()
+        self.wrapper = CWrapper()
 
     def run_state(self, state, data):
         """
-        start execution of model B
+        start execution of model C
 
         :param state:   (string) current state
         :param data:    (list)   input data list used to run the model
         :return:        (list)   model output data list
         """
-        output = self.modelB.run(data, state)
+        output = self.wrapper.run(data, state)
         return output
+

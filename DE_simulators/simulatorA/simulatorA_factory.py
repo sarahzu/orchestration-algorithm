@@ -1,4 +1,4 @@
-from simulatorA.simulatorA import SimulatorA
+from DE_simulators.simulatorA.simulatorA import SimulatorA
 from simulator_factory import handler_execution
 
 simulator = SimulatorA()

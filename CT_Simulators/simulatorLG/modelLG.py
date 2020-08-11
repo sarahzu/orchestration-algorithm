@@ -21,12 +21,9 @@ class ModelLG:
         self.result = [self.x]
 
     def run(self, data_list, state):
-        new_data_entry = self.x + self.r * self.x * (1 - self.x / self.K) * self.Dt * data_list[0][0] / random.randint(1, 10)
-        try:
-            self.initial_data[state] = new_data_entry
-        except IndexError:
-            self.initial_data.append(new_data_entry)
-
+        new_data_entry = self.x + self.r * self.x * (1 - self.x / self.K) * self.Dt * data_list[0][0][0] / random.randint(1, 10)
+        self.initial_data[0] = new_data_entry
+        self.initial_data[1] = new_data_entry * state
         return self.initial_data
 
 

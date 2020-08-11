@@ -1,8 +1,8 @@
-from simulatorCT.simulatorCT import SimulatorCT
+from CT_Simulators.simulatorLG.simulatorLG import SimulatorLG
 from simulator_factory import handler_execution
 
 
-simulator = SimulatorCT()
+simulator = SimulatorLG()
 
 
 def handler_simulator(agent, message):

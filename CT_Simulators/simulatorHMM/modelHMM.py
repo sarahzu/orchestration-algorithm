@@ -28,13 +28,13 @@ class ModelHMM:
         :return:            (list) output data list
         """
         # multiplier = 0
-        # if len(data_list) == 1:
-        #     if len(data_list[0]) == 1:
-        #         multiplier = data_list[0][0]
+        # if len(event) == 1:
+        #     if len(event[0]) == 1:
+        #         multiplier = event[0][0]
         #     else:
-        #         multiplier = data_list[0][state]
+        #         multiplier = event[0][state]
         # else:
-        #     for data_points in data_list:
+        #     for data_points in event:
         #        multiplier += data_points[state]
 
         # startprob = np.array([0.6, 0.3, 0.1, 0.0])

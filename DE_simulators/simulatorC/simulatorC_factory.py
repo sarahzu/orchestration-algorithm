@@ -1,8 +1,8 @@
-from simulatorB.simulatorB import SimulatorB
+from DE_simulators.simulatorC.simulatorC import SimulatorC
 from simulator_factory import handler_execution
 
 
-simulator = SimulatorB()
+simulator = SimulatorC()
 
 
 def handler_simulator(agent, message):

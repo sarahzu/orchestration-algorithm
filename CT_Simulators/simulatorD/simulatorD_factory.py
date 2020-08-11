@@ -1,4 +1,4 @@
-from simulatorD.simulatorD import SimulatorD
+from CT_Simulators.simulatorD.simulatorD import SimulatorD
 from simulator_factory import handler_execution
 
 
