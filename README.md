@@ -19,7 +19,7 @@ orchestrator.run_simulation()
 ```
 By changing the values of _coupling_algorithm_name_, _simulator_list_ and _initial_data_dict_, the simulation can be changed. Before the first run, all required libraries have to be downloaded by executing the following command: 
 ```
-pip install -r requirements.txt
+pip install -r requirements.txt.
 ```
 
 The simulation can then be run by executing the following command: 
