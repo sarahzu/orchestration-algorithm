@@ -64,7 +64,7 @@ class ModelHMM:
         model.covars_ = covars
 
         # Generate samples
-        X, Z = model.sample(5)
+        X, Z = model.sample(4)
         result = []
         for np_array in X:
             result.append([np_array[0], np_array[1]])
