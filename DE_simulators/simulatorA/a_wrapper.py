@@ -1,3 +1,5 @@
+import copy
+
 from DE_simulators.simulatorA.modelA import ModelA
 from hybrid_wrapper import HybridWrapper
 
@@ -10,5 +12,6 @@ class AWrapper(HybridWrapper):
     def run(self, ct_data, state):
         de_data = ct_data[0][0] + ct_data[1][0]
         output = [self.model.run(de_data, state)]
-        result = {"output": output, "transformed input": de_data}
+        transformed_input = copy.deepcopy(de_data)
+        result = {"output": output, "transformed input": transformed_input}
         return result

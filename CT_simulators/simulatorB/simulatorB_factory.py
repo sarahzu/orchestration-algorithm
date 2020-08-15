@@ -1,4 +1,4 @@
-from CT_Simulators.simulatorB.simulatorB import SimulatorB
+from CT_simulators.simulatorB.simulatorB import SimulatorB
 from simulator_factory import handler_execution
 
 

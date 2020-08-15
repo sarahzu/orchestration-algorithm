@@ -1,4 +1,4 @@
-from CT_Simulators.simulatorE.simulatorE import SimulatorE
+from CT_simulators.simulatorE.simulatorE import SimulatorE
 from simulator_factory import handler_execution
 
 simulator = SimulatorE()

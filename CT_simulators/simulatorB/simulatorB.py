@@ -1,21 +1,21 @@
 from osbrain import Agent
 
+from CT_simulators.simulatorB.b_wrapper import BWrapper
 from simulator import Simulator
-from CT_Simulators.simulatorHMM.DE_to_CT_wrapper import DeToCtWrapper
 
 
-class SimulatorHMM(Simulator, Agent):
+class SimulatorB(Simulator, Agent):
     """
-    Specific simulator class for the model D
+    Specific simulator class for the model B
     """
 
     def __init__(self):
         super().__init__()
-        self.wrapper = DeToCtWrapper()
+        self.wrapper = BWrapper()
 
     def run_state(self, state, data):
         """
-        start execution of model D
+        start execution of model B
 
         :param state:   (string) current state
         :param data:    (list)   input data list used to run the model

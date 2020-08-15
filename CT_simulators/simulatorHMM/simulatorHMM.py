@@ -1,17 +1,17 @@
 from osbrain import Agent
 
-from CT_Simulators.simulatorLG.LG_wrapper import LGWrapper
 from simulator import Simulator
+from CT_simulators.simulatorHMM.DE_to_CT_wrapper import DeToCtWrapper
 
 
-class SimulatorLG(Simulator, Agent):
+class SimulatorHMM(Simulator, Agent):
     """
     Specific simulator class for the model D
     """
 
     def __init__(self):
         super().__init__()
-        self.wrapper = LGWrapper()
+        self.wrapper = DeToCtWrapper()
 
     def run_state(self, state, data):
         """

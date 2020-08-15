@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 from hybrid_wrapper import HybridWrapper
 from DE_simulators.simulatorCiw.modelCiw import ModelCiw
@@ -16,7 +18,8 @@ class CtToDeWrapper(HybridWrapper):
             event = 1
         else:
             event = -1
+        transformed_input = copy.deepcopy(event)
 
         output = [self.model.run(event, state)]
-        result = {"output": output, "transformed input": event}
+        result = {"output": output, "transformed input": transformed_input}
         return result

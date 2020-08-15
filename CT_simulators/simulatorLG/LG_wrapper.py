@@ -1,4 +1,6 @@
-from CT_Simulators.simulatorLG.modelLG import ModelLG
+import copy
+
+from CT_simulators.simulatorLG.modelLG import ModelLG
 from hybrid_wrapper import HybridWrapper
 
 
@@ -8,6 +10,7 @@ class LGWrapper(HybridWrapper):
         self.model = ModelLG()
 
     def run(self, ct_data, state):
+        transformed_input = copy.deepcopy(ct_data)
         output = self.model.run(ct_data, state)
-        result = {"output": output, "transformed input": ct_data}
+        result = {"output": output, "transformed input": transformed_input}
         return result

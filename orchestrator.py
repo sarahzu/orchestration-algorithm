@@ -5,16 +5,16 @@ from os import listdir
 from os.path import isfile, join
 from osbrain import run_nameserver, run_agent
 
-from CT_Simulators.simulatorE import simulatorE_factory
-from CT_Simulators.simulatorLG import simulatorLG_factory
+from CT_simulators.simulatorE import simulatorE_factory
+from CT_simulators.simulatorLG import simulatorLG_factory
 from DE_simulators.simulatorA import simulatorA_factory
-from CT_Simulators.simulatorB import simulatorB_factory
+from CT_simulators.simulatorB import simulatorB_factory
 import random
 from termcolor import colored
 from DE_simulators.simulatorC import simulatorC_factory
 from DE_simulators.simulatorCiw import simulatorCiw_factory
-from CT_Simulators.simulatorD import simulatorD_factory
-from CT_Simulators.simulatorHMM import simulatorHMM_factory
+from CT_simulators.simulatorD import simulatorD_factory
+from CT_simulators.simulatorHMM import simulatorHMM_factory
 from strategy.gauss_seidel_algorithm import GaussSeidelAlgorithm
 from strategy.jacobi_algorithm import JacobiAlgorithm
 import jsbeautifier
@@ -203,7 +203,7 @@ if __name__ == '__main__':
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
     # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
-    orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
-    # orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
+    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+    orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
 
     orchestrator.run_simulation()

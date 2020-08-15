@@ -1,4 +1,6 @@
-from CT_Simulators.simulatorE.modelE import ModelE
+import copy
+
+from CT_simulators.simulatorE.modelE import ModelE
 from hybrid_wrapper import HybridWrapper
 
 
@@ -11,6 +13,7 @@ class EWrapper(HybridWrapper):
         initial_data = self.model.get_data()
         initial_data[0] -= data_list[0][0]
         ct_data = initial_data
+        transformed_input = copy.deepcopy(ct_data)
         output = self.model.run(ct_data)
-        result = {"output": output, "transformed input": ct_data}
+        result = {"output": output, "transformed input": transformed_input}
         return result

@@ -1,5 +1,7 @@
+import copy
+
 from hybrid_wrapper import HybridWrapper
-from CT_Simulators.simulatorHMM.modelHMM import ModelHMM
+from CT_simulators.simulatorHMM.modelHMM import ModelHMM
 
 
 class DeToCtWrapper(HybridWrapper):
@@ -13,7 +15,8 @@ class DeToCtWrapper(HybridWrapper):
         ct_data[1] -= de_data[0][0]
         ct_data[2] += de_data[0][0]
         ct_data[3] -= de_data[0][0]
+        transformed_input = copy.deepcopy(ct_data)
         output = self.model.run(ct_data)
-        result = {"output": output, "transformed input": ct_data}
+        result = {"output": output, "transformed input": transformed_input}
         return result
 

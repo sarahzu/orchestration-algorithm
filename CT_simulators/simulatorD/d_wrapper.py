@@ -1,4 +1,6 @@
-from CT_Simulators.simulatorD.modelD import ModelD
+import copy
+
+from CT_simulators.simulatorD.modelD import ModelD
 from hybrid_wrapper import HybridWrapper
 
 
@@ -12,6 +14,7 @@ class DWrapper(HybridWrapper):
         initial_data[0] += data_list[0][1] + data_list[1][0]
         initial_data[1] -= data_list[0][1] + data_list[1][0]
         ct_data = initial_data
+        transformed_input = copy.deepcopy(ct_data)
         output = self.model.run(ct_data, state)
-        result = {"output": output, "transformed input": ct_data}
+        result = {"output": output, "transformed input": transformed_input}
         return result
