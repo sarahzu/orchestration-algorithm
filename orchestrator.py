@@ -107,7 +107,7 @@ class Orchestrator:
         if self.used_algorithm.lower() == 'gauss-seidel':
             # run gauss seidel used_algorithm
             gauss_seidel_algorithm = GaussSeidelAlgorithm()
-            final_state, final_data = gauss_seidel_algorithm.algorithm(
+            final_state, final_data = gauss_seidel_algorithm.algorithm_dual_dependency(
                 min_state, self.state, max_state, simulator_list_in_correct_order, alias_list_in_correct_order,
                 simulator_initial_inputs, self.time_step, self.dependencies, state_history)
 
@@ -180,13 +180,13 @@ if __name__ == '__main__':
     simulator_list_hybrid = [{"name": "simulatorHMM", "factory": simulatorHMM_factory,
                             "dependency": ["simulatorCiw"], "order": 0},
                              {"name": "simulatorCiw", "factory": simulatorCiw_factory,
-                            "dependency": ["simulatorHMM"], "order": 1},
+                            "dependency": ["simulatorLG"], "order": 1},
                              {"name": "simulatorLG", "factory": simulatorLG_factory,
                             "dependency": ["simulatorHMM"], "order": 2}]
 
-    initial_data_dict = {"simulatorA": 2, "simulatorB": [5, 6], "simulatorC": 6, "simulatorD": [18, 21]}
+    initial_data_dict = {"simulatorA": 2, "simulatorB": [10, 15, 10, 11, 101], "simulatorC": 6, "simulatorD": [18, 21, 12]}
 
-    initial_data_dict_gauss = {"simulatorC": 6, "simulatorE": [8, 19]}
+    initial_data_dict_gauss = {"simulatorC": [6], "simulatorE": [8, 19]}
 
     initial_data_dict_test_hybrid = {
         "simulatorHMM": [
@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
+    # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
     # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
     orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
 

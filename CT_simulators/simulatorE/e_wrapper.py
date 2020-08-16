@@ -11,7 +11,10 @@ class EWrapper(HybridWrapper):
 
     def run(self, data_list, state):
         initial_data = self.model.get_data()
-        initial_data[0] -= data_list[0][0]
+        try:
+            initial_data[0] -= data_list[0][0]
+        except Exception:
+            initial_data[0] -= data_list[0]
         ct_data = initial_data
         transformed_input = copy.deepcopy(ct_data)
         output = self.model.run(ct_data)

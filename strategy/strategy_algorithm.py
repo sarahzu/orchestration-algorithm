@@ -1,3 +1,4 @@
+import copy
 import json
 import statistics
 from statistics import median
@@ -66,18 +67,29 @@ class StrategyAlgorithm:
         """
         Extrapolation function. It computes the next data entry by taking the median of all data entry spaces.
 
-        :param input_data:  (list) data point list
-        :return:            (int)  next computed value
+        :param input_data:  (list or int) data to extrapoalte
+        :return:            (lsit or int) next computed value
         """
-        differences = []
+        # output_data_list = []
+        # for k,v in input_data.items():
+        #     for simulator, value in v.items():
+        #         output_data_list.append(value['output data'])
+        # print("list: " + str(output_data_list))
+
+        # differences = []
         try:
             for i, data in enumerate(input_data):
-                if i != len(input_data) - 1:
-                    differences.append(input_data[i+1] - data)
-            input_data.append(input_data[-1] + median(differences))
+                # differences.append(input_data[i+1] - data)
+                input_data[i] += 1
+            # input_data.append(input_data[-1] + median(differences))
             return input_data
-        except (statistics.StatisticsError, TypeError) as e:
-            return input_data
+        except (IndexError, TypeError) as e:
+            try:
+                for i, data in enumerate(input_data):
+                    input_data[i][0] += 1
+                return input_data
+            except (IndexError, TypeError) as e:
+                return input_data + 1
 
     # def extrapolate2(self, model_values_1, model_values_2, state):
     #     # given values
@@ -94,10 +106,18 @@ class StrategyAlgorithm:
         :param input_data_post:     (list) second data list
         :return:                    (int) computed value
         """
-        prev_value = input_data_prev[-1]
-        post_value = input_data_post[-1]
+        # prev_value = input_data_prev[-1]
+        # post_value = input_data_post[-1]
 
-        return median([prev_value, post_value])
+        try:
+            result = []
+            for i, data in enumerate(input_data_prev):
+                sub_result = input_data_post[i] + input_data_prev[i]
+                result.append(sub_result)
+            return result
+        except (statistics.StatisticsError, TypeError) as e:
+            result = [input_data_post + 2]
+            return result
 
     # # method taken and modified from https://gist.github.com/tartakynov/83f3cd8f44208a1856ce
     # # last visited: 2020-07-13
