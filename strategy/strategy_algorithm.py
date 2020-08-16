@@ -3,6 +3,8 @@ import json
 import statistics
 from statistics import median
 
+import numpy
+
 
 class StrategyAlgorithm:
 
@@ -65,20 +67,28 @@ class StrategyAlgorithm:
         """
         Extrapolation function.
 
-        :param input_data:  (list or int) data to extrapoalte
-        :return:            (lsit or int) next computed value
+        :param input_data:  (list) list containing all previous inputs
+        :return:            (list) computed output list
         """
+        previous_list = []
+        differences = []
+        for data_list in input_data:
+            if not previous_list:
+                previous_list = data_list
+            else:
+                data_array = numpy.array(data_list)
+                previous_data_array = numpy.array(previous_list)
+                try:
+                    difference_array = data_array - previous_data_array
+                    difference_list = difference_array.tolist()
+                    differences.append(difference_list)
+                    previous_list = data_list
+                except ValueError:
+                    pass
         try:
-            for i, data in enumerate(input_data):
-                input_data[i] += 1
-            return input_data
-        except (IndexError, TypeError) as e:
-            try:
-                for i, data in enumerate(input_data):
-                    input_data[i][0] += 1
-                return input_data
-            except (IndexError, TypeError) as e:
-                return input_data + 1
+            return differences[-1]
+        except (UnboundLocalError, IndexError):
+            return input_data[-1]
 
     # def extrapolate2(self, model_values_1, model_values_2, state):
     #     # given values
@@ -91,18 +101,28 @@ class StrategyAlgorithm:
         """
         Interpolation function.
 
-        :param input_data:          (list) data list
-        :return:                    (int) computed value
+        :param input_data:          (list) list containing all previous inputs
+        :return:                    (int) computed output list
         """
+        previous_list = []
+        differences = []
+        for data_list in input_data:
+            if not previous_list:
+                previous_list = data_list
+            else:
+                data_array = numpy.array(data_list)
+                previous_data_array = numpy.array(previous_list)
+                try:
+                    difference_array = data_array - previous_data_array
+                    difference_list = difference_array.tolist()
+                    differences.append(difference_list)
+                    previous_list = data_list
+                except ValueError:
+                    pass
         try:
-            result = []
-            for i, data in enumerate(input_data):
-                sub_result = input_data[i] + 2
-                result.append(sub_result)
-            return result
-        except (statistics.StatisticsError, TypeError) as e:
-            result = [input_data + 2]
-            return result
+            return input_data[-1][0] + differences[-1][0]
+        except (UnboundLocalError, IndexError):
+            return input_data[-1]
 
     # # method taken and modified from https://gist.github.com/tartakynov/83f3cd8f44208a1856ce
     # # last visited: 2020-07-13

@@ -47,8 +47,13 @@ class JacobiAlgorithm(StrategyAlgorithm):
         while all(min_state <= state < max_state for state in states.values()):
             # extrapolate all model's input data
             for agent_name in agent_simulator_name_list:
+                previous_output_data_list = []
+                for state_number, time_step_dict in state_history.items():
+                    previous_output_data_list.append(time_step_dict[agent_name]['output data'])
                 input_dict_with_extrapolation[agent_name]['output data'] = \
-                    self.extrapolate(input_dict_with_extrapolation[agent_name]['output data'])
+                    self.extrapolate(previous_output_data_list)
+                    #  self.extrapolate(input_dict_with_extrapolation[agent_name]['output data'])
+
             #  run the models with the input data
             for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):
                 # check on which inputs from other models the current model depends on

@@ -50,19 +50,30 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
             # go through each simulator
             for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):
                 curr_simulator_input = []
+                previous_output_extrapolated_data_list = []
+                previous_output_interpolated_data_list = []
                 # check on which inputs from other models the current model depends on
                 for simulator_name_of_dependency in dependencies[agent_simulator_name]:
                     # if the model runs first, extrapolate
                     if order_count == 0:
-                        extrapolated_value = self.extrapolate(
-                            input_dict_with_extrapolation_and_interpolation[simulator_name_of_dependency]['output data']
-                        )
+                        for state_number, time_step_dict in state_history.items():
+                            previous_output_extrapolated_data_list.append(time_step_dict[simulator_name_of_dependency]['output data'])
+                        extrapolated_value = self.extrapolate(previous_output_extrapolated_data_list)
+                        input_dict_with_extrapolation_and_interpolation[agent_simulator_name]['output data'] = \
+                            extrapolated_value
+                        # extrapolated_value = self.extrapolate(
+                        #     input_dict_with_extrapolation_and_interpolation[simulator_name_of_dependency]['output data']
+                        # )
                         curr_simulator_input.append(extrapolated_value)
                     # if the model runs second, interpolate
                     elif order_count == 1:
-                        interpolated_value = self.interpolation(
-                            input_dict_with_extrapolation_and_interpolation[simulator_name_of_dependency]['output data']
-                        )
+                        for state_number, time_step_dict in state_history.items():
+                            previous_output_interpolated_data_list.append(time_step_dict[simulator_name_of_dependency]['output data'])
+                        interpolated_value = self.interpolation(previous_output_interpolated_data_list)
+                            # input_dict_with_extrapolation_and_interpolation[simulator_name_of_dependency]['output data']
+                        # )
+                        input_dict_with_extrapolation_and_interpolation[agent_simulator_name]['output data'] = \
+                            interpolated_value
                         curr_simulator_input.append(interpolated_value)
                     else:
                         # gather the input data normally
