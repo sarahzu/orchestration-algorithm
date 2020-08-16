@@ -29,6 +29,7 @@ known_algorithms = ['Gauss-Seidel', 'Jacobi']
 
 transformed_input_data = []
 
+
 def connect_simulator_to_agent_proxy(simulator_name):
     """
     create agent proxy and connect it to the right simulator name
@@ -178,11 +179,11 @@ if __name__ == '__main__':
                              "dependency": ["simulatorC"], "order": 1}]
 
     simulator_list_hybrid = [{"name": "simulatorHMM", "factory": simulatorHMM_factory,
-                            "dependency": ["simulatorCiw"], "order": 0},
+                              "dependency": ["simulatorCiw"], "order": 0},
                              {"name": "simulatorCiw", "factory": simulatorCiw_factory,
-                            "dependency": ["simulatorLG"], "order": 1},
+                              "dependency": ["simulatorLG"], "order": 1},
                              {"name": "simulatorLG", "factory": simulatorLG_factory,
-                            "dependency": ["simulatorHMM"], "order": 2}]
+                              "dependency": ["simulatorHMM"], "order": 2}]
 
     initial_data_dict = {
         "simulatorA": 2, "simulatorB": [10, 15, 10, 11, 101], "simulatorC": 6, "simulatorD": [18, 21, 12]
@@ -192,20 +193,26 @@ if __name__ == '__main__':
 
     initial_data_dict_test_hybrid = {
         "simulatorHMM": [
-                [-0.17307679866920092, -1.0046970164746332],
-                [11.163840145390036, -1.0574433375980758],
-                [-0.5244943350032614, -0.07812436573441134],
-                [0.3396166360722303, -0.10286418783911368],
-                [0.562790707279984, 0.41179374282339065]
-            ],
+            [-0.17307679866920092, -1.0046970164746332],
+            [11.163840145390036, -1.0574433375980758],
+            [-0.5244943350032614, -0.07812436573441134],
+            [0.3396166360722303, -0.10286418783911368],
+            [0.562790707279984, 0.41179374282339065]
+        ],
         "simulatorCiw": [0.20627254772273172],
         "simulatorLG": [0.08, 0.09]
     }
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
-    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+
+    # ***** simulation using Gauss-Seidel Dual dependent coupling and Model C and E *****
+    #  orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
+
+    # ***** simulation using Jacobi coupling and Model A, B, C and D *****
+    #  orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+
+    # ***** simulation using Jacobi coupling and Model Ciw, HMM and LG *****
     orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
 
     orchestrator.run_simulation()
