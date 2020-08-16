@@ -14,7 +14,9 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                                   agent_simulator_name_list, initial_input_dict, time_step, dependencies,
                                   state_history):
         """
-        Gauss-Seidel coupling algorithm but with only dual dependent models.
+        Gauss-Seidel coupling algorithm. Work only with two dual dependent models!
+        The first model's output is extrapolated and the extrapolated value is then used as input for the next model.
+        The next model's output is then interpolated and used as input for the first model's input.
 
         :param min_state:                       (int)  smallest state possible
         :param state:                           (int)  current simulation state
@@ -33,53 +35,50 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                                                 (dict) and history dictionary containing all computed data
         """
 
-        new_input_dict = copy.deepcopy(initial_input_dict)
+        input_dict_with_extrapolation_and_interpolation = copy.deepcopy(initial_input_dict)
 
-        prev_simulator_input = initial_input_dict
         states = {}
-        try:
-            for simulator_name in agent_simulator_name_list:
-                states[simulator_name] = state
-                # states = [state] * len(agent_simulator_object_list)
-        except TypeError:
-            print(colored("------------\nagent_simulator_object_list is of type "
-                          + str(type(agent_simulator_object_list)) + "\nbut should be of type list"))
-            return None, None
+        # store current state for every simulator
+        for simulator_name in agent_simulator_name_list:
+            states[simulator_name] = state
 
+        # increase state in order to compute the next state
         output_state = state + time_step
+        # compute each state
         while all(min_state <= state < max_state for state in states.values()):
-            count = 0
-            prev_agent_name = ""
+            order_count = 0
+            # go through each simulator
             for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):
                 curr_simulator_input = []
                 # check on which inputs from other models the current model depends on
                 for simulator_name_of_dependency in dependencies[agent_simulator_name]:
-                    # first exrapolate
-                    if count == 0:
+                    # if the model runs first, extrapolate
+                    if order_count == 0:
                         extrapolated_value = self.extrapolate(
-                            new_input_dict[simulator_name_of_dependency]['output data'])
+                            input_dict_with_extrapolation_and_interpolation[simulator_name_of_dependency]['output data']
+                        )
                         curr_simulator_input.append(extrapolated_value)
-                    # second intrapolate
-                    elif count == 1:
+                    # if the model runs second, interpolate
+                    elif order_count == 1:
                         interpolated_value = self.interpolation(
-                            new_input_dict[simulator_name_of_dependency]['output data'],
-                            new_input_dict[simulator_name_of_dependency]['output data'])
+                            input_dict_with_extrapolation_and_interpolation[simulator_name_of_dependency]['output data']
+                        )
                         curr_simulator_input.append(interpolated_value)
                     else:
-                        # gather the input data
-                        new_data = state_history[states[agent_simulator_name]][simulator_name_of_dependency]['output data']
-                        curr_simulator_input.append(new_data)
+                        # gather the input data normally
+                        input_data = \
+                            state_history[states[agent_simulator_name]][simulator_name_of_dependency]['output data']
+                        curr_simulator_input.append(input_data)
 
                 # define current state and input for current model
                 current_simulators_state = states[agent_simulator_name]
                 new_input = {"state": current_simulators_state, "output data": curr_simulator_input}
 
-                # execute simulator with output from other simulator(s)
+                # execute current simulator with output from its dependent on simulator
                 simulator_output = self.execute_simulator_with_output_from_other_simulator(
                     agent_simulator, new_input, agent_simulator_name, time_step)
-                #  print(str(agent_simulator_name) + " output: " + str(simulator_output))
 
-                new_input_dict[agent_simulator_name] = simulator_output
+                input_dict_with_extrapolation_and_interpolation[agent_simulator_name] = simulator_output
 
                 # increase simulators state
                 try:
@@ -93,11 +92,10 @@ class GaussSeidelAlgorithm(StrategyAlgorithm):
                 #     new_input_dict[agent_simulator_name]['interpolated input'] = interpolated_value
 
                 # update state history with new data
-                new_history_state = copy.deepcopy(new_input_dict)
-
+                new_history_state = copy.deepcopy(input_dict_with_extrapolation_and_interpolation)
                 state_history[output_state] = new_history_state
 
-                count += 1
+                order_count += 1
 
             output_state += time_step
 

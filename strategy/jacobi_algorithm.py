@@ -34,46 +34,40 @@ class JacobiAlgorithm(StrategyAlgorithm):
                                                 (dict) and history dictionary containing all computed data
         """
 
-        new_input_dict = copy.deepcopy(initial_input_dict)
+        input_dict_with_extrapolation = copy.deepcopy(initial_input_dict)
+        non_extrapolated_input_dict = copy.deepcopy(initial_input_dict)
 
         states = {}
-        try:
-            for simulator_name in agent_simulator_name_list:
-                states[simulator_name] = state
-                # states = [state] * len(agent_simulator_object_list)
-        except TypeError:
-            print(colored("------------\nagent_simulator_object_list is of type "
-                          + str(type(agent_simulator_object_list)) + "\nbut should be of type list"))
-            return None, None
+        # store current state for every simulator
+        for simulator_name in agent_simulator_name_list:
+            states[simulator_name] = state
 
+        # increase state in order to compute the next state
         output_state = state + time_step
         while all(min_state <= state < max_state for state in states.values()):
-            # extrapolate the models input data
+            # extrapolate all model's input data
             for agent_name in agent_simulator_name_list:
-                new_input_dict[agent_name]['output data'] = self.extrapolate(new_input_dict[agent_name]['output data'])
-
+                input_dict_with_extrapolation[agent_name]['output data'] = \
+                    self.extrapolate(input_dict_with_extrapolation[agent_name]['output data'])
             #  run the models with the input data
             for agent_simulator, agent_simulator_name in zip(agent_simulator_object_list, agent_simulator_name_list):
                 # check on which inputs from other models the current model depends on
                 curr_simulator_input = []
                 for dependency in dependencies[agent_simulator_name]:
                     # gather the input data
-                    new_data = new_input_dict[dependency]['output data']
+                    new_data = input_dict_with_extrapolation[dependency]['output data']
                     curr_simulator_input.append(new_data)
 
                 # define current state and input for current model
                 current_simulators_state = states[agent_simulator_name]
                 new_input = {"state": current_simulators_state, "output data": curr_simulator_input}
 
-                prev_simulator_input = new_input
-
                 # execute current simulator with output from its dependent on simulators
                 simulator_output = self.execute_simulator_with_output_from_other_simulator(
                     agent_simulator, new_input, agent_simulator_name, time_step)
-                # print(str(agent_simulator_name) + " output: " + str(simulator_output))
 
                 # add newly computed output to stored inputs
-                new_input_dict[agent_simulator_name] = simulator_output
+                non_extrapolated_input_dict[agent_simulator_name] = simulator_output
 
                 # increase simulators state
                 try:
@@ -82,9 +76,10 @@ class JacobiAlgorithm(StrategyAlgorithm):
                     print(colored("\n-----warning: state could not be increased------\n", "red"))
 
                 # update state history with new data
-                new_history_state = copy.deepcopy(new_input_dict)
+                new_history_state = copy.deepcopy(non_extrapolated_input_dict)
                 state_history[output_state] = new_history_state
 
+            #  increase state and move to next time step
             output_state += time_step
 
         return states, state_history

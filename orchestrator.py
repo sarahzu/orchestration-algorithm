@@ -166,9 +166,9 @@ if __name__ == '__main__':
     simulator_list = [{"name": "simulatorA", "factory": simulatorA_factory,
                        "dependency": ["simulatorB", "simulatorC"], "order": 1},
                       {"name": "simulatorB", "factory": simulatorB_factory,
-                       "dependency": ["simulatorC", "simulatorA"], "order": 3},  # 2},
+                       "dependency": ["simulatorC", "simulatorA"], "order": 3},
                       {"name": "simulatorC", "factory": simulatorC_factory,
-                       "dependency": ["simulatorB"], "order": 0},  # ]
+                       "dependency": ["simulatorB"], "order": 0},
                       {"name": "simulatorD", "factory": simulatorD_factory,
                        "dependency": ["simulatorB", "simulatorA"], "order": 2}]
 
@@ -184,7 +184,9 @@ if __name__ == '__main__':
                              {"name": "simulatorLG", "factory": simulatorLG_factory,
                             "dependency": ["simulatorHMM"], "order": 2}]
 
-    initial_data_dict = {"simulatorA": 2, "simulatorB": [10, 15, 10, 11, 101], "simulatorC": 6, "simulatorD": [18, 21, 12]}
+    initial_data_dict = {
+        "simulatorA": 2, "simulatorB": [10, 15, 10, 11, 101], "simulatorC": 6, "simulatorD": [18, 21, 12]
+    }
 
     initial_data_dict_gauss = {"simulatorC": [6], "simulatorE": [8, 19]}
 
@@ -203,7 +205,7 @@ if __name__ == '__main__':
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
     # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
-    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+    # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
     orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
 
     orchestrator.run_simulation()

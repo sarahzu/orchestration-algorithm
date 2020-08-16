@@ -49,14 +49,12 @@ class StrategyAlgorithm:
         simulator_receiver_output_data = agent_simulator_receiver.recv(agent_sender_name)
         try:
             simulator_receiver_output = {
-                # "state": simulator_sender_input['state'] + time_step,
                 "input data": simulator_sender_input['output data'],
                 "transformed input data": simulator_receiver_output_data['transformed input'],
                 "output data": simulator_receiver_output_data['output']
             }
         except TypeError:
             simulator_receiver_output = {
-                # "state": simulator_sender_input['state'] + time_step,
                 "input data": simulator_sender_input['output data'],
                 "transformed input data": [],
                 "output data": simulator_receiver_output_data
@@ -65,23 +63,14 @@ class StrategyAlgorithm:
 
     def extrapolate(self, input_data):
         """
-        Extrapolation function. It computes the next data entry by taking the median of all data entry spaces.
+        Extrapolation function.
 
         :param input_data:  (list or int) data to extrapoalte
         :return:            (lsit or int) next computed value
         """
-        # output_data_list = []
-        # for k,v in input_data.items():
-        #     for simulator, value in v.items():
-        #         output_data_list.append(value['output data'])
-        # print("list: " + str(output_data_list))
-
-        # differences = []
         try:
             for i, data in enumerate(input_data):
-                # differences.append(input_data[i+1] - data)
                 input_data[i] += 1
-            # input_data.append(input_data[-1] + median(differences))
             return input_data
         except (IndexError, TypeError) as e:
             try:
@@ -98,25 +87,21 @@ class StrategyAlgorithm:
     #     f = interpolate.interp1d(xi, yi, fill_value='extrapolate')
     #     return f(state)
 
-    def interpolation(self, input_data_prev, input_data_post):
+    def interpolation(self, input_data):
         """
-        Interpolation function. It computes the value inbetween the last elements of the two given data lists.
+        Interpolation function.
 
-        :param input_data_prev:     (list) first data list
-        :param input_data_post:     (list) second data list
+        :param input_data:          (list) data list
         :return:                    (int) computed value
         """
-        # prev_value = input_data_prev[-1]
-        # post_value = input_data_post[-1]
-
         try:
             result = []
-            for i, data in enumerate(input_data_prev):
-                sub_result = input_data_post[i] + input_data_prev[i]
+            for i, data in enumerate(input_data):
+                sub_result = input_data[i] + 2
                 result.append(sub_result)
             return result
         except (statistics.StatisticsError, TypeError) as e:
-            result = [input_data_post + 2]
+            result = [input_data + 2]
             return result
 
     # # method taken and modified from https://gist.github.com/tartakynov/83f3cd8f44208a1856ce
