@@ -26,13 +26,16 @@ The simulation can then be run by executing the following command:
 ```
 python orchestrator.py 
 ```
-Per default, the _Orchestrator_ simulates two models:
-* A DE model simulating the waiting time of customers visiting a bank (open source model called _CIW_ [1])
-* A CT Hiden Markov Model (using the open source library _hmmlearn_ [2])
+Per default, the _Orchestrator_ simulates three models:
+* A DE model simulating the waiting time of customers visiting a bank (open-source model called _CIW_ [1])
+* A CT Hiden Markov Model (using the open-source library _hmmlearn_ [2])
+* A CT logistic growth model [3]
 
 The simulation results are written in a JSON file called _simulation_output.json_ which contains every result for every computed time step and model. The results are also printed on the terminal.
 
 ## References
-[1] Palmer, Geraint I., et al. "Ciw: An open-source discrete event simulation library." _Journal of Simulation_ 13.1 (2019): 68-82. https://ciw.readthedocs.io/en/latest/index.html
+[1] Palmer, Geraint I., et al. "Ciw: An open-source discrete event simulation library." _Journal of Simulation_ 13.1 (2019): 68-82. [Website](https://ciw.readthedocs.io/en/latest/index.html)
 
-[2] hmmlearn developers (2010). hmmlearn. [https://hmmlearn.readthedocs.io/en/latest/](https://hmmlearn.readthedocs.io/en/latest/)
+[2] hmmlearn developers (2010). hmmlearn. [Website](https://hmmlearn.readthedocs.io/en/latest/)
+
+[3] Hiroki Sayama (2020). Simulating Continuous-Time Models. _OpenSUNY_. [Website](https://math.libretexts.org/Bookshelves/Applied_Mathematics/Book%3A_Introduction_to_the_Modeling_and_Analysis_of_Complex_Systems_(Sayama)/06%3A_ContinuousTime_Models_I__Modeling/6.04%3A_Simulating_Continuous-Time_Models)
