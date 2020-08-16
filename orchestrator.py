@@ -206,13 +206,14 @@ if __name__ == '__main__':
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
 
-    # ***** simulation using Gauss-Seidel Dual dependent coupling and Model C and E *****
-    #  orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
+    # simulation using Gauss-Seidel dual dependent coupling and Model C and E
+    orchestrator_one = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
 
-    # ***** simulation using Jacobi coupling and Model A, B, C and D *****
-    #  orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
+    # simulation using Jacobi coupling and Model A, B, C and D
+    orchestrator_two = Orchestrator(jacobi, simulator_list, initial_data_dict)
 
-    # ***** simulation using Jacobi coupling and Model Ciw, HMM and LG *****
-    orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
+    # simulation using Jacobi coupling and Model Ciw, HMM and LG
+    orchestrator_three = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
 
-    orchestrator.run_simulation()
+    # run the initialised orchestrator
+    orchestrator_three.run_simulation()
