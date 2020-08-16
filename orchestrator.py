@@ -107,7 +107,7 @@ class Orchestrator:
         if self.used_algorithm.lower() == 'gauss-seidel':
             # run gauss seidel used_algorithm
             gauss_seidel_algorithm = GaussSeidelAlgorithm()
-            final_state, final_data = gauss_seidel_algorithm.algorithm_dual_dependency(
+            final_state, final_data = gauss_seidel_algorithm.algorithm(
                 min_state, self.state, max_state, simulator_list_in_correct_order, alias_list_in_correct_order,
                 simulator_initial_inputs, self.time_step, self.dependencies, state_history)
 
@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
     jacobi = 'jacobi'
     gauss = 'gauss-seidel'
-    # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
+    # orchestrator = Orchestrator(gauss, simulator_list_gauss, initial_data_dict_gauss)
     # orchestrator = Orchestrator(jacobi, simulator_list, initial_data_dict)
     orchestrator = Orchestrator(jacobi, simulator_list_hybrid, initial_data_dict_test_hybrid)
 
