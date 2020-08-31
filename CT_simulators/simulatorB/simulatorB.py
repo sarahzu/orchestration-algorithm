@@ -19,7 +19,8 @@ class SimulatorB(Simulator, Agent):
 
         :param state:   (string) current state
         :param data:    (list)   input data list used to run the model
-        :return:        (list)   model output data list
+        :return:        (dict)   model output data dictionary in the form
+                                 {'output': [20, -1, -4, 9, 146], 'transformed input': [11, 8, 8, 9, 134]}
         """
         output = self.wrapper.run(data, state)
         return output

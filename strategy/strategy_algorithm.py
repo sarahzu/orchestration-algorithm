@@ -1,12 +1,12 @@
-import copy
 import json
-import statistics
-from statistics import median
 
 import numpy
 
 
 class StrategyAlgorithm:
+    """
+    Abstract coupling coupling_algorithm class used to define specific coupling algorithms used in co-simulation
+    """
 
     def __init__(self):
         pass
@@ -14,14 +14,14 @@ class StrategyAlgorithm:
     def algorithm(self, min_state, state, max_state, agent_simulator_object_list, agent_simulator_name_list,
                   initial_input, time_step, dependencies, state_history):
         """
-        abstract function defining each algorithm strategy's algorithm function.
+        abstract function defining each strategy's coupling_algorithm function.
 
         :param min_state:                       (int)  smallest state possible
         :param state:                           (int)  current simulation state
         :param max_state:                       (int)  biggest state possible
         :param agent_simulator_object_list:     (list) list containing all simulator objects used in this simulation
         :param agent_simulator_name_list:       (list) list containing all simulator names used in this simulation
-        :param initial_input:                   (dict) initial input data used at the start of the coupling algorithm
+        :param initial_input:                   (dict) initial input data used at the start of the coupling coupling_algorithm
                                                        in the form: {simulator: {state:0, data:[...]}, ...}
         :param time_step:                       (int)  passed time between two states
         :param dependencies:                    (dict) dictionary containing all dependency information in the form
@@ -30,12 +30,12 @@ class StrategyAlgorithm:
                                                        simulation state in the form:
                                                        {0:{simulator: {state:0, data:[...]}, ...}, 1: {...}}
         :return: states, state_history          (list) list of all computed states
-                                                (dict) and history dictionary containing all computed data
+                                                (dict) history dictionary containing all computed data
         """
         pass
 
     def execute_simulator_with_output_from_other_simulator(self, agent_simulator_receiver, simulator_sender_input,
-                                                           agent_sender_name, time_step):
+                                                           agent_sender_name):
         """
         Execute a receiver agent with input from a sender simulator's agent
 
@@ -43,9 +43,11 @@ class StrategyAlgorithm:
         :param simulator_sender_input:      (dict)   input for receiving agent coming from the sending agent
                                                      in the form: {state: 0, data: [...]}
         :param agent_sender_name:           (string) name of sending agent
-        :param time_step                    (int)    passed time between two states
         :return:                            (dict)   output data computed with executed simulator
-                                                     in the form: {state: 0, data: [...]}
+                                                     in the form:
+                                                     {'input data': [[2]],
+                                                     'transformed input data': [8, 9, 3, -2],
+                                                     'output data': [[-0.2, 0.4], [0.9, -0.3], [0.1, 1.8], [1.05, 1.0]]}
         """
         agent_simulator_receiver.send(agent_sender_name, json.dumps(simulator_sender_input))
         simulator_receiver_output_data = agent_simulator_receiver.recv(agent_sender_name)

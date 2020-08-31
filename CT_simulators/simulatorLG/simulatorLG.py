@@ -6,7 +6,7 @@ from simulator import Simulator
 
 class SimulatorLG(Simulator, Agent):
     """
-    Specific simulator class for the model D
+    Specific simulator class for the logistic growth model
     """
 
     def __init__(self):
@@ -15,11 +15,13 @@ class SimulatorLG(Simulator, Agent):
 
     def run_state(self, state, data):
         """
-        start execution of model D
+        start execution of logistic growth model
 
         :param state:   (string) current state
         :param data:    (list)   input data list used to run the model
-        :return:        (list)   model output data list
+        :return:        (dict)   model output data dictionary in the form
+                                 {'output': [0.09948076960399241, 0.0],
+                                 'transformed input': [[[-0.17307679866920092, -1.0046970164746332], ...]]}
         """
         output = self.wrapper.run(data, state)
         return output

@@ -3,8 +3,7 @@ import ciw
 
 class ModelCiw:
     """
-    code taken and modified from https://ciw.readthedocs.io/en/latest/Background/simulationpractice.html
-    last visited: 10.08.2020
+    DE model simulating customers visiting a bank
     """
 
     def __init__(self):
@@ -13,6 +12,9 @@ class ModelCiw:
     def run(self, event, state):
         """
         simulation of average waiting time of customers visiting a bank with a given amount of servers (event).
+
+        code taken and modified from https://ciw.readthedocs.io/en/latest/Background/simulationpractice.html
+        last visited: 10.08.2020
 
         :param event:       (int)  change in number of servers
         :param state:       (int)  current time step
@@ -48,16 +50,6 @@ class ModelCiw:
         except ZeroDivisionError:
             average_wait = sum(average_waits)
         return average_wait
-
-        # return_list = []
-        # try:
-        #     result = average_wait
-        #     return_list.append(result)
-        #     return return_list
-        # except IndexError:
-        #
-        #     return_list.append(-1)
-        #     return return_list
 
 
 if __name__ == '__main__':

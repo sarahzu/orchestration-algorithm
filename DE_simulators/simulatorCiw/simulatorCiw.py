@@ -5,6 +5,9 @@ from simulator import Simulator
 
 
 class SimulatorCiw(Simulator, Agent):
+    """
+    Specific simulator class for the CIW model
+    """
 
     def __init__(self):
         super().__init__()
@@ -16,6 +19,8 @@ class SimulatorCiw(Simulator, Agent):
 
         :param state: (int)  current state of the simulation
         :param data:  (list) previously computed data
+        :return       (dict) model output data dictionary in the form
+                             {'output': [0.011261392881117818], 'transformed input': 1}
         """
         output = self.wrapper.run(data, state)
         return output

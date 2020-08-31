@@ -14,8 +14,8 @@ class ModelC:
         run model execution
 
         :param event:       (string) model input event signal
-        :param state:       (int)  current state
-        :return:            (list) model computed output data list
+        :param state:       (int)    current state
+        :return:            (int)    model computed output data
         """
         try:
             return event + 2 * state

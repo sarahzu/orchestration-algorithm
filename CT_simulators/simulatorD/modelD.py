@@ -13,12 +13,11 @@ class ModelD:
     def get_data(self):
         return self.initial_data
 
-    def run(self, data_list, state):
+    def run(self, data_list):
         """
         run model execution
 
         :param data_list:   (list) model input data list
-        :param state:       (int)  current state
         :return:            (list) model computed output data list
         """
         try:

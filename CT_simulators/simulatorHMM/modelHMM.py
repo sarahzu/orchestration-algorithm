@@ -1,11 +1,11 @@
-from statistics import median
-
-import matplotlib.pyplot as plt
 import numpy as np
 from hmmlearn import hmm
 
 
 class ModelHMM:
+    """
+    CT model generating sample points from a Hiden Markov Model (HMM)
+    """
 
     def __init__(self):
         self.data = [0.6, 0.3, 0.1, 0.0]
@@ -18,7 +18,7 @@ class ModelHMM:
 
     def run(self, data_list):
         """
-        CT model cenerating sample points from a Hiden Markov Model (HMM)
+        run Hiden Markov Model (HMM)
 
         code taken and modified from:
         https://hmmlearn.readthedocs.io/en/latest/auto_examples/plot_hmm_sampling.html#sphx-glr-auto-examples-plot-hmm-sampling-py
@@ -27,15 +27,6 @@ class ModelHMM:
         :param data_list:   (list) input data list
         :return:            (list) output data list
         """
-        # multiplier = 0
-        # if len(event) == 1:
-        #     if len(event[0]) == 1:
-        #         multiplier = event[0][0]
-        #     else:
-        #         multiplier = event[0][state]
-        # else:
-        #     for data_points in event:
-        #        multiplier += data_points[state]
 
         # startprob = np.array([0.6, 0.3, 0.1, 0.0])
         startprob = np.array(data_list)
@@ -51,7 +42,7 @@ class ModelHMM:
                           [9.0, 10.0],
                           [11.0, -1.0]])
         # The covariance of each component
-        covars = .5 * np.tile(np.identity(2), (4, 1, 1)) # * multiplier
+        covars = .5 * np.tile(np.identity(2), (4, 1, 1))
 
         # Build an HMM instance and set parameters
         model = hmm.GaussianHMM(n_components=4, covariance_type="full")
@@ -65,10 +56,10 @@ class ModelHMM:
 
         # Generate samples
         X, Z = model.sample(4)
+
+        # gather result
         result = []
         for np_array in X:
             result.append([np_array[0], np_array[1]])
-            # result.append(median(np_array))
-        # self.data = result
         return result
 

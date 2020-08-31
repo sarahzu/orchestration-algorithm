@@ -5,11 +5,21 @@ from hybrid_wrapper import HybridWrapper
 
 
 class BWrapper(HybridWrapper):
+    """
+    Wrapper class combining a DE model with this CT model
+    """
 
     def __init__(self):
         self.model = ModelB()
 
     def run(self, de_data, state):
+        """
+        run this CT model with transformed DE input
+
+        :param de_data: (list) input DE data
+        :param state:   (int)  current state
+        :return:
+        """
         initial_data = self.model.get_data()
         try:
             initial_data[0] += de_data[0]

@@ -18,7 +18,6 @@ class ModelE:
         run model execution
 
         :param data_list:   (list) model input data list
-        :param state:       (int)  current state
         :return:            (list) model computed output data list
         """
         try:

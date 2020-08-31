@@ -1,6 +1,9 @@
 
 
 class Simulator:
+    """
+    Abstract simulator class
+    """
 
     def __init__(self):
         pass
@@ -11,6 +14,6 @@ class Simulator:
 
         :param state:   (int)  current state
         :param data:    (list) data input list for model execution
-        :return:        (list) model output data list
+        :return:        (dict) model output data dict
         """
         pass
