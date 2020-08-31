@@ -87,9 +87,16 @@ class StrategyAlgorithm:
                     previous_list = data_list
                 except ValueError:
                     pass
-        try:
-            return differences[-1]
-        except (UnboundLocalError, IndexError):
+        if len(differences) != 0:
+            try:
+                try:
+                    output = input_data[-1] + numpy.median(differences).tolist()
+                except TypeError:
+                    output = [i + numpy.median(differences).item() for i in input_data[-1]]
+                return output
+            except (UnboundLocalError, IndexError):
+                return input_data[-1]
+        else:
             return input_data[-1]
 
     # def extrapolate2(self, model_values_1, model_values_2, state):
