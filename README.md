@@ -31,7 +31,7 @@ Per default, the _Orchestrator_ simulates three models:
 * A CT Hiden Markov Model (using the open-source library _hmmlearn_ [2])
 * A CT logistic growth model [3]
 
-The simulation results are written in a JSON file called _simulation_output.json_ which contains every result for every computed time step and model. The results are also printed on the terminal.
+The simulation results are written in a JSON file called _simulation_output.json_ which is located in the root folder and contains every result for every computed time step and model. The results are also printed on the terminal.
 
 ## References
 [1] Palmer, Geraint I., et al. "Ciw: An open-source discrete event simulation library." _Journal of Simulation_ 13.1 (2019): 68-82. [Website](https://ciw.readthedocs.io/en/latest/index.html)
