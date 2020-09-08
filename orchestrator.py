@@ -214,3 +214,21 @@ if __name__ == '__main__':
 
     # run the initialised orchestrator
     orchestrator_three.run_simulation()
+
+    # ********** TEMPLATE TO ADD YOUR OWN MODELS TO THE SYSTEM **********
+    # comment line 216 and un-commend line 222 to 232. Adjust the code to match your own simulation.
+    #  Attention: Code below only works, when you've added your model to the template folder simulators_template
+
+    # from simulators_template.Model_CT import CT_simulator_factory
+    # from simulators_template.Model_DE import DE_simulator_factory
+    #
+    # simulator_list_demo = [{"name": "CTsimulator", "factory": CT_simulator_factory,
+    #                         "dependency": ["DEsimulator"], "order": 0},
+    #                        {"name": "DEsimulator", "factory": DE_simulator_factory,
+    #                         "dependency": ["CTsimulator"], "order": 1}]
+    # initial_data_dict_demo = {"CTsimulator": [7, 6], "DEsimulator": 8}
+    #
+    # orchestrator_demo = Orchestrator(jacobi_name_string, simulator_list_demo, initial_data_dict_demo)
+    # orchestrator_demo.run_simulation()
+
+    #  *******************************************************************
